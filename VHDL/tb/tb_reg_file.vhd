@@ -1,0 +1,146 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+library work;
+use work.risc_package.all;
+
+entity tb_reg_file is     -- entity declaration 
+end tb_reg_file; 
+
+architecture dut of tb_reg_file is 
+
+
+
+component register_file
+port (  clk: in std_logic;
+		rst: in std_logic;--reset attivo alto	
+		RegWrite: in std_logic; -- write enable
+		read_en: in std_logic; --read enable
+		read_register_1: in std_logic_vector(length_in_RF-1 downto 0);
+		read_register_2: in std_logic_vector(length_in_RF-1 downto 0);
+		write_register: in std_logic_vector(length_in_RF-1 downto 0);
+		write_data_in: in std_logic_vector(data_parallelism-1 downto 0);
+		read_data_1_out: out std_logic_vector(data_parallelism-1 downto 0);
+		read_data_2_out: out std_logic_vector(data_parallelism-1 downto 0)
+); 
+end component;
+
+
+signal clk:             std_logic:='0'; --parte da 0
+signal RegWrite:        std_logic;
+signal read_en:         std_logic;
+signal rst: 			   std_logic;
+signal write_register:  std_logic_vector (length_in_RF-1 downto 0) := "00000";
+signal write_data_in:   std_logic_vector (data_parallelism-1 downto 0) := (others => '0');
+signal read_register_1: std_logic_vector (length_in_RF-1 downto 0) := "00000";
+signal read_register_2: std_logic_vector (length_in_RF-1 downto 0) := "00000";
+signal read_data_1_out: std_logic_vector (data_parallelism-1 downto 0);
+signal read_data_2_out: std_logic_vector (data_parallelism-1 downto 0);
+
+begin
+
+  rf: register_file 
+	  port map(
+		clk              =>  clk,                
+		RegWrite         =>  RegWrite, 
+		read_en          =>  read_en,       
+		rst		        =>  rst,		
+		write_register   =>  write_register,
+		write_data_in    =>  write_data_in, 
+		read_register_1  =>  read_register_1,
+		read_register_2  =>  read_register_2,
+		read_data_1_out  =>  read_data_1_out,
+		read_data_2_out  =>  read_data_2_out
+		
+		
+		);
+	
+	write_prc: process(clk, RegWrite)
+
+    constant wr_data: std_logic_vector (data_parallelism-1 downto 0):= "00000000000000000000000000001100";-- equal to 12 in decimal format
+	variable wr_reg: integer := 0;
+
+	begin
+
+
+	
+	if(clk'event and clk = '1') then
+    
+    if(RegWrite='1') then
+   
+		if (wr_reg= number_regs - 1) then
+			wr_reg:=0;
+		else
+		
+		wr_reg :=wr_reg + 1;
+		end if;
+    
+		end if;
+    end if;
+	
+   
+
+    write_data_in<=wr_data;
+    write_register<= std_logic_vector(to_unsigned(wr_reg, length_in_RF));
+
+    end process;
+
+    read_prc: process(clk, read_en)
+
+	variable read_reg: integer := 0;
+	
+	begin
+	
+	if(clk'event and clk = '1') then
+    
+    if(read_en='1') then
+   
+    if (read_reg= number_regs - 1) then
+			read_reg:=0;
+		else
+		
+		read_reg :=read_reg + 1;
+		end if;
+    
+      
+   
+    
+    end if;
+    end if;
+
+    read_register_1<= std_logic_vector(to_unsigned(read_reg, length_in_RF));
+    read_register_2<= std_logic_vector(to_unsigned(read_reg, length_in_RF));
+
+    end process;
+
+
+
+
+
+    clk <= not(clk) after 20 ns;--periodo 40 ns
+
+	STIMULI: process
+	begin
+	
+    rst<='1';
+	 RegWrite <= '0';
+	 read_en  <= '0';
+	 
+	 wait for 20 ns;
+	 
+	 rst<='0';
+	 RegWrite <= '1';
+	 	 
+     read_en  <= '1';
+	 
+    wait for 1240 ns; --32 clk cycles
+	 
+    RegWrite <= '0';
+	 
+    
+    read_en  <= '0';	 
+    wait;
+ end process; 
+end dut;
+		

@@ -1,0 +1,118 @@
+m255
+K4
+z2
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 dC:/Users/gianl/Desktop/lab3/RF/sim
+Eregister_file
+Z1 w1607266557
+Z2 DPx4 work 12 risc_package 0 22 [=bLLNIm08R1neZ><MYTg1
+Z3 DPx4 ieee 11 numeric_std 0 22 :ASDNFgHXf_ih3J@9F3Ze1
+Z4 DPx3 std 6 textio 0 22 zE1`LPoLg^DX3Oz^4Fj1K3
+Z5 DPx4 ieee 14 std_logic_1164 0 22 eNV`TJ_GofJTzYa?f<@Oe1
+R0
+Z6 8../src/register_file.vhd
+Z7 F../src/register_file.vhd
+l0
+L8
+VGfHI3RQfCC36:o;4hTXRo0
+!s100 HCKA9@E5ANDg3OAiKMAYH1
+Z8 OV;C;10.5b;63
+31
+Z9 !s110 1607266570
+!i10b 1
+Z10 !s108 1607266570.000000
+Z11 !s90 -reportprogress|300|-93|-work|./work|../src/register_file.vhd|
+Z12 !s107 ../src/register_file.vhd|
+!i113 1
+Z13 o-93 -work ./work
+Z14 tExplicit 1 CvgOpt 0
+Abehavioural
+R2
+R3
+R4
+R5
+DEx4 work 13 register_file 0 22 GfHI3RQfCC36:o;4hTXRo0
+l31
+L25
+V2VlhJOX09O@EbTW7X_@BK1
+!s100 cH38]BUKSJBMJKB;FE[b]1
+R8
+31
+R9
+!i10b 1
+R10
+R11
+R12
+!i113 1
+R13
+R14
+Prisc_package
+R3
+R4
+R5
+w1607257052
+R0
+8../src/risc_package.vhd
+F../src/risc_package.vhd
+l0
+L5
+V[=bLLNIm08R1neZ><MYTg1
+!s100 z420XLL>ad5W8zj;0dKIZ2
+R8
+31
+R9
+!i10b 1
+R10
+!s90 -reportprogress|300|-93|-work|./work|../src/risc_package.vhd|
+!s107 ../src/risc_package.vhd|
+!i113 1
+R13
+R14
+Etb_reg_file
+Z15 w1607265857
+R2
+R3
+R4
+R5
+R0
+Z16 8../tb/tb_reg_file.vhd
+Z17 F../tb/tb_reg_file.vhd
+l0
+L8
+VOMGG3Th=R>mn7`kQ[e6<I1
+!s100 XdN<X]_nO=?TNDMjUiiZG2
+R8
+31
+R9
+!i10b 1
+R10
+Z18 !s90 -reportprogress|300|-93|-work|./work|../tb/tb_reg_file.vhd|
+Z19 !s107 ../tb/tb_reg_file.vhd|
+!i113 1
+R13
+R14
+Adut
+R2
+R3
+R4
+R5
+Z20 DEx4 work 11 tb_reg_file 0 22 OMGG3Th=R>mn7`kQ[e6<I1
+l41
+L11
+Z21 VN=^_azWIRnflVVBR@:Y_=1
+Z22 !s100 3TgMAhnGGk^a;5f3Fj`N@2
+R8
+31
+R9
+!i10b 1
+R10
+R18
+R19
+!i113 1
+R13
+R14
