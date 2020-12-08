@@ -5,7 +5,7 @@ use ieee.numeric_std.all;
 package risc_package is
 
 	constant trailing_zeros            : integer: =12;  -- trailing zeros for filling operation
-   constant sel_imm					   : integer :=3; 	-- immediate selector
+    constant sel_imm				   : integer :=3; 	-- immediate selector
 	constant instruction_parallelism   : integer :=32;  -- instruction parallelism
  	constant number_regs			   : integer :=32;  -- number of regs in RF
 	constant data_parallelism		   : integer :=32;	-- data parallelism
@@ -14,5 +14,6 @@ package risc_package is
 	constant srx					   : integer :=5;   -- amount of right shift
 	constant funct					   : integer :=3;  	--function bits			
 	constant aluOP					   : integer :=3;  	--ALU OP bits
+	constant rd_length                 : integer :=5;   --length of rd
 	
 end package risc_package;
