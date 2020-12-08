@@ -37,7 +37,7 @@ begin
    when "000" => -- ADDI/LW/ANDI I-type
 	immediate_s<=std_logic_vector(resize(unsigned(instruction_s(31 downto 20)), data_parallelism));
 	when "001" => --LUI/AUIPC U-type
-	immediate_s<=std_logic_vector(shift_left(unsigned(std_logic_vector(resize(unsigned(instruction_s(31 downto 12)), data_parallelism))),12));
+	immediate_s<=std_logic_vector(shift_left(unsigned(std_logic_vector(resize(unsigned(instruction_s(31 downto 12)), data_parallelism))),trailing_zeros));
 	when "010" => --JAL J-type
 	immediate_s<= std_logic_vector(resize(unsigned(instruction_s(31) & instruction_s(19 downto 12) & instruction_s(20) & instruction_s(30 downto 21)), data_parallelism));
 	when "011" => --SW  S-type
