@@ -6,7 +6,7 @@ package risc_package is
 
     constant out_ctrl                  : integer :=7; -- numebr of bits at the output of the CU (VA CAMBIATO IL VALORE, QUESTO è MESSO SOLO DI PROVA, POI VANNO CONTEGGIATI QUANTI SEGNALI ABBIAMO)
 	constant source_reg 			   : integer :=5; --source bits
-    constant mux_ctrl 				   : integer :=2;   --mux control bit
+    constant mux_ctrl 				   : integer :=2;   --mux control bit EX stage
 	constant trailing_zeros            : integer :=12;  -- trailing zeros for filling operation
     constant sel_imm				   : integer :=3; 	-- immediate selector
 	constant instruction_parallelism   : integer :=32;  -- instruction parallelism
