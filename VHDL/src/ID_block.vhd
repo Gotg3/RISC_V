@@ -10,29 +10,28 @@ entity ID_block is
 	
 	    clk					 : in  std_logic;
 		rst					 : in  std_logic;--reset attivo alto
-		sel					 : in  std_logic_vector(sel_imm-1 downto 0);
-		RegWrite				 : in  std_logic;
-		read_en				 : in  std_logic;
-		ID_EX_MemRead        : in std_logic;-- attivo alto
-		jal_in				 : in  std_logic_vector(instruction_parallelism - 1 downto 0);
-		pc_in					 : in  std_logic_vector(instruction_parallelism - 1 downto 0);
-		read_register_1    : in  std_logic_vector(length_in_RF-1 downto 0);
-		read_register_2	 : in  std_logic_vector(length_in_RF-1 downto 0);
-		write_register		 : in  std_logic_vector(length_in_RF-1 downto 0);
-		write_data_in		 : in  std_logic_vector(data_parallelism - 1 downto 0);
-		instruction        : in  std_logic_vector(instruction_parallelism - 1 downto 0);
-     	rd_backward                : in std_logic_vector(source_reg - 1 downto 0);
-		to_control_unit_out: out std_logic_vector(instruction_parallelism - 1 downto 0);
-		jal_out				 : out std_logic_vector(instruction_parallelism - 1 downto 0);
-		pc_out				 : out std_logic_vector(instruction_parallelism - 1 downto 0);
-		read_data_1_out	 : out std_logic_vector(data_parallelism-1 downto 0);
-		read_data_2_out    : out std_logic_vector(data_parallelism-1 downto 0);
-		immediate          : out std_logic_vector(data_parallelism - 1 downto 0);
-		to_ALU_control     : out std_logic_vector(alu_ctrl - 1 downto 0);
-		rd_out						 : out std_logic_vector(rd_length - 1 downto 0);
-		PCWrite: out std_logic;
-		IF_ID_Write: out std_logic;
-		q: out std_logic_vector(out_ctrl -1 downto 0)
+		sel_ID_in					 : in  std_logic_vector(sel_imm-1 downto 0);
+		RegWrite_ID_in			 : in  std_logic;
+		read_en_ID_in				 : in  std_logic;
+		ID_EX_MemRead_ID_in        : in std_logic;-- attivo alto
+		jal_ID_in				 : in  std_logic_vector(instruction_parallelism - 1 downto 0);
+		pc_ID_in			     : in  std_logic_vector(instruction_parallelism - 1 downto 0);
+		read_register_1_ID_in    : in  std_logic_vector(length_in_RF-1 downto 0);
+		read_register_2_ID_in	 : in  std_logic_vector(length_in_RF-1 downto 0);
+		write_register_ID_in		 : in  std_logic_vector(length_in_RF-1 downto 0);
+		write_data_ID_in		 : in  std_logic_vector(data_parallelism - 1 downto 0);
+		instruction_ID_in       : in  std_logic_vector(instruction_parallelism - 1 downto 0);
+     	rd_backward_ID_in                : in std_logic_vector(source_reg - 1 downto 0);
+		jal_ID_out				 : out std_logic_vector(instruction_parallelism - 1 downto 0);
+		pc_ID_out				 : out std_logic_vector(instruction_parallelism - 1 downto 0);
+		read_data_1_ID_out	 : out std_logic_vector(data_parallelism-1 downto 0);
+		read_data_2_ID_out    : out std_logic_vector(data_parallelism-1 downto 0);
+		immediate_ID_out          : out std_logic_vector(data_parallelism - 1 downto 0);
+		to_ALU_control_ID_out     : out std_logic_vector(alu_ctrl - 1 downto 0);
+		rd_ID_out						 : out std_logic_vector(rd_length - 1 downto 0);
+		PCWrite_ID_out: out std_logic;
+		IF_ID_Write_ID_out: out std_logic;
+		q_ID_out: out std_logic_vector(out_ctrl -1 downto 0)
 		
 	);    
 end ID_block; 
@@ -42,7 +41,7 @@ architecture behavioural of ID_block is
 component imm_gen is
 port(
 		rst		  : in  std_logic;--reset attivo alto
-		sel		  : in  std_logic_vector(sel_imm-1 downto 0);
+		sel  	  : in  std_logic_vector(sel_imm-1 downto 0);
 		instruction: in  std_logic_vector(instruction_parallelism - 1 downto 0);
 		immediate  : out std_logic_vector(data_parallelism - 1 downto 0)
 		
@@ -80,10 +79,17 @@ end component;
 
 component mux_ID is
 port(
-        in_CU: in std_logic_vector(out_ctrl -1 downto 0);-- segnale che entra nel mux proveniente dalla CU
+        in_ctrl: in std_logic_vector(out_ctrl -1 downto 0);-- segnale che entra nel mux proveniente dalla CU
 		zeros: in std_logic_vector(out_ctrl -1 downto 0):=(others=>'0');
 		q: out std_logic_vector(out_ctrl -1 downto 0);
 		sel: in std_logic
+    );
+end component;
+
+component CU is
+port(
+		instruction: in std_logic_vector(out_ctrl -1 downto 0):=(others=>'0');
+		ctrl: out std_logic_vector(out_ctrl -1 downto 0)
     );
 end component;
 
@@ -94,7 +100,7 @@ signal read_register_1_s, read_register_2_s, write_register_s: std_logic_vector(
 signal write_data_in_s, read_data_1_out_s, read_data_2_out_s  : std_logic_vector(data_parallelism-1 downto 0);
 signal instruction_s                                          : std_logic_vector(instruction_parallelism - 1 downto 0);
 signal immediate_s                                            : std_logic_vector(data_parallelism - 1 downto 0);
-signal in_CU_s,q_s                                                : std_logic_vector(out_ctrl -1 downto 0);
+signal from_CU_to_mux_s,q_s                                                : std_logic_vector(out_ctrl -1 downto 0);
 signal zeros_s                                                : std_logic_vector(out_ctrl -1 downto 0):=others(=>'0');
 
 begin
@@ -102,24 +108,24 @@ begin
 clk_s <= clk;
 rst_s <= rst;
 
-RegWrite_s <= RegWrite;
-read_en_s  <= read_en;
-sel_s <= sel;
-read_register_1_s <= read_register_1;
-read_register_2_s <= read_register_2;
-write_register_s  <= write_register;
-write_data_in_s <= write_data_in;
-instruction_s <= instruction;
+RegWrite_s <= RegWrite_ID_in;
+read_en_s  <= read_en_ID_in;
+sel_s <= sel_ID_in;
+read_register_1_s <= read_register_1_ID_in;
+read_register_2_s <= read_register_2_ID_in;
+write_register_s  <= write_register_ID_in;
+write_data_in_s <= write_data_ID_in;
+instruction_s <= instruction_ID_in;
 
-read_data_1_out <= read_data_1_out_s;
-read_data_2_out <= read_data_2_out_s;
-immediate <= immediate_s;
+read_data_1_ID_out <= read_data_1_out_s;
+read_data_2_ID_out <= read_data_2_out_s;
+immediate_ID_out   <= immediate_s;
 
-rd_backward_s<=rd_backward;
-ID_EX_MemRead_s<=ID_EX_MemRead;
-rs1_s<=instruction(19 downto 15);
-rs2_s<=instruction(24 downto 20);
-rd_backward_s<=rd_backward;
+rd_backward_s<=rd_backward_ID_in;
+ID_EX_MemRead_s<=ID_EX_MemRead_ID_in;
+rs1_s<=instruction_ID_in(19 downto 15);
+rs2_s<=instruction_ID_in(24 downto 20);
+
 
 immediate_generator: imm_gen port map(
 									rst_s, 
@@ -148,24 +154,27 @@ Hazard: HDU port map(
 						rd_backward_s,
 						PCWrite_s,
 						IF_ID_Write_s,
-						sel_mux_s
-						
+						sel_mux_s						
 						);
 
 mux: mux_ID port map(
-					in_CU_s,
+					from_CU_to_mux_s,
 					zeros_s,
 					q_s,
-					sel_mux_s,
-					
+					sel_mux_s					
 					);
-						
-to_control_unit_out <= instruction;
-jal_out <= jal_in;
-pc_out  <= pc_in;
-to_ALU_control <= (instruction(30) & instruction(14 downto 12));
-rd_out <= instruction(11 downto 7);
-PCWrite<=PCWrite_s;
-IF_ID_Write<=IF_ID_Write_s;
-q<=q_s;
+
+control_unit: CU port map(
+					instruction_s,
+					from_CU_to_mux_s
+					);
+						 
+
+jal_ID_out <= jal_ID_in;
+pc_ID_out  <= pc_ID_in;
+to_ALU_control_ID_out <= (instruction(30) & instruction(14 downto 12));
+rd_ID_out <= instruction(11 downto 7);
+PCWrite_ID_out<=PCWrite_s;
+IF_ID_Write_ID_out<=IF_ID_Write_s;
+q_ID_out<=q_s;
 end behavioural;
