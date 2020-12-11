@@ -25,10 +25,14 @@ end entity;
 	signal in2_s	:std_logic_vector(data_parallelism-1 downto 0):=(others=>'0');
 	signal z_s      :std_logic:='0';
 	signal shamt_s	:std_logic_vector(srx-1 downto 0);
+	--signal sub		:signed(data_parallelism-1 downto 0):=(others=>'0'); --sub of in1 and in2
+	signal zeros	:std_logic_vector(data_parallelism-1 downto 0):=(others=>'0');
 	
 	begin
 	
 		op_selection: process (ctrl, in1_s,in2_s,rst,shamt_s)
+		
+		variable sub: signed(data_parallelism-1 downto 0):=(others=>'0'); --sub of in1 and in2
 		
 		begin
 		
@@ -41,22 +45,22 @@ end entity;
 				
 				case ctrl is
 					
-					when "0000" => output_s<=std_logic_vector( unsigned(in1_s)+unsigned(in2_s));	    --LW     unsigned for lw?
+					when "0000" => output_s<=std_logic_vector( signed(in1_s)+ signed(in2_s));	    --LW     
 										z_s<='0';
 										
-					when "0001" => output_s<=std_logic_vector( signed(in1_s)+signed(in2_s)); 	 		--ADDI signed for ADDI?
+					when "0001" => output_s<=std_logic_vector( signed(in1_s)+signed(in2_s)); 	 		--ADDI 
 										z_s<='0';
 				
-					when "0010" => output_s<=std_logic_vector( shift_right(unsigned(in1_s), to_integer(unsigned(shamt_s))));	--SRAI signed rs1?
+					when "0010" => output_s<=std_logic_vector( shift_right(signed(in1_s), to_integer(unsigned(shamt_s))));	--SRAI signed rs1?
 										z_s<='0';
 					
 					when "0011" => output_s<= in1_s AND in2_s;													--AND
 										z_s<='0';
 					
-					when "0100" => output_s<=std_logic_vector( unsigned(in1_s)+unsigned(in2_s));    	-- AUIPC usigned?
+					when "0100" => output_s<=std_logic_vector( signed(in1_s)+ signed(in2_s));    	-- AUIPC 
 										z_s<='0';
 		
-					when "0101" => output_s<=std_logic_vector( unsigned(in1_s)+unsigned(in2_s));	    --SW     unsigned for sw?
+					when "0101" => output_s<=std_logic_vector( signed(in1_s) + signed(in2_s));	    --SW     
 										z_s<='0';
 					
 					when "0110" => output_s<=std_logic_vector( signed(in1_s)+signed(in2_s));			--ADD signed?
@@ -65,7 +69,7 @@ end entity;
 					when "0111" => output_s<= in1_s XOR in2_s;											--XOR
 										z_s<='0';
 					
-					when "1000" => 
+					when "1000" => 																		--SLT
 						
 									if(signed(in1_s) <= signed(in2_s)) then 
 										
@@ -77,9 +81,13 @@ end entity;
 									end if;
 									
 					
-					when "1001" => 
+					when "1001" => 																		--BEQ (implemented with sub)															
 									
-									if(signed(in1_s) = signed(in2_s)) then
+									
+									sub:=signed(in1_s) - signed(in2_s); 
+									
+									
+									if( unsigned(sub) = to_unsigned(0, sub'length) ) then  --original version was with signal "zeros"
 									
 										z_s<='1'; --1 = take branch
 										output_s<=(others=>'0');
@@ -90,6 +98,18 @@ end entity;
 										output_s<=(others=>'0');
 										
 									end if;
+									
+									--if(signed(in1_s) = signed(in2_s)) then
+									--
+									--	z_s<='1'; --1 = take branch
+									--	output_s<=(others=>'0');
+									--	
+									--	
+									--else
+									--	z_s<='0';
+									--	output_s<=(others=>'0');
+									--	
+									--end if;
 									
 					when others => output_s<=(others=>'0');	
 										z_s<='0';
@@ -103,7 +123,6 @@ end entity;
 		in1_s<=in1;
 		in2_s<=in2;
 		shamt_s<=shamt;
-		
 		output<=output_s;
 		z<=z_s;
 		
