@@ -85,8 +85,30 @@ architecture structural of RISCV is
 		q_ID_out				 : out std_logic_vector(out_ctrl -1 downto 0)	
 	);    
 	
+	component reg_instruction_IF_ID
+	port(
+		clk        : in std_logic;
+		rst        : in std_logic;
+		IF_ID_write: in std_logic;
+		d          :  in std_logic_vector(instruction_parallelism-1 downto 0);
+		q          :  out std_logic_vector(instruction_parallelism-1 downto 0)		
+	);    
 	
+	component reg_jal_PC_IF_ID
+	port(
+		clk			: in std_logic;
+		rst			: in std_logic;
+		IF_ID_write : in std_logic;
+		d 			:  in std_logic_vector(instruction_parallelism-1 downto 0);
+		q 			:  out std_logic_vector(instruction_parallelism-1 downto 0)
+	);
 	
-	
+	component reg
+	port(
+		clk	: in std_logic;
+		rst : in std_logic;
+		r   :  in std_logic_vector(n-1 downto 0);
+		q   :  out std_logic_vector(n-1 downto 0)
+	);
 	
 	begin
