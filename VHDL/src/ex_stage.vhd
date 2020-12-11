@@ -5,7 +5,7 @@ use ieee.numeric_std.all;
 library work;
 use work.risc_package.all;
 
-entity ex_stage is
+entity EX_stage is
 port(
 --in
 
@@ -41,7 +41,7 @@ rd_WB_in			:in std_logic_vector(dest_reg-1 downto 0)
 );
 end entity;
 
-architecture structural of ex_stage is 
+architecture structural of EX_stage is 
 
 	signal shamt_s					:std_logic_vector(srx-1 downto 0);
 	signal ALU_ctr  				:std_logic_vector(alu_ctrl-1 downto 0);

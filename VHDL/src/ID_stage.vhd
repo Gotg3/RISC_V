@@ -5,7 +5,7 @@ use ieee.numeric_std.all;
 library work;
 use work.risc_package.all;
 
-entity ID_block is 
+entity ID_stage is 
 	port(
 	
 	    clk					 : in  std_logic;
@@ -34,9 +34,9 @@ entity ID_block is
 		q_ID_out: out std_logic_vector(out_ctrl -1 downto 0)
 		
 	);    
-end ID_block; 
+end ID_stage; 
 
-architecture behavioural of ID_block is
+architecture behavioural of ID_stage is
 
 component imm_gen is
 port(
