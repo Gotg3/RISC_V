@@ -34,7 +34,7 @@ begin
 	
 	case sel is
 	
-   when "000" => -- ADDI/LW/ANDI I-type
+    when "000" => -- ADDI/LW/ANDI I-type
 	immediate_s<=std_logic_vector(resize(unsigned(instruction_s(31 downto 20)), data_parallelism));
 	when "001" => --LUI/AUIPC U-type
 	immediate_s<=std_logic_vector(shift_left(unsigned(std_logic_vector(resize(unsigned(instruction_s(31 downto 12)), data_parallelism))),trailing_zeros));
@@ -45,7 +45,7 @@ begin
 	when "100" => --BEQ SB-type
 	immediate_s<=std_logic_vector(resize(unsigned(instruction_s(31) & instruction_s(7) & instruction_s(30 downto 25) & instruction_s(11 downto 8)), data_parallelism));
 	when "101" => -- SRAI  I-type (special)
-	immediate_s<=std_logic_vector(resize(unsigned(instruction_s(31 downto 20)), data_parallelism));
+	immediate_s<=instruction_s;
 	when others =>
 	immediate_s<=(others=>'0');
 	
