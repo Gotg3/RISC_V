@@ -9,48 +9,50 @@ entity ex_stage is
 port(
 --in
 
-clk					:std_logic;
-rst					:std_logic;
-PC_EX_in			:std_logic_vector(instruction_parallelism-1 downto 0);
-imm_EX_in			:std_logic_vector(data_parallelism-1 downto 0);
-Read_data1_EX_in	:std_logic_vector(data_parallelism-1 downto 0);
-Read_data2_EX_in	:std_logic_vector(data_parallelism-1 downto 0);
-imm30_EX_in			:std_logic;
-funct3_EX_in		:std_logic_vector(funct-1 downto 0);
-rd_EX_in			:std_logic_vector(dest_reg-1 downto 0);
-ALUsrc_EX_in		:std_logic_vector(alu_src-1 downto 0);		--sel mux 3
-ALU_op_EX_in		:std_logic_vector(aluOP-1 downto 0);
+rst						:in std_logic;
+PC_EX_in				   :in std_logic_vector(instruction_parallelism-1 downto 0);
+imm_EX_in				:in std_logic_vector(data_parallelism-1 downto 0);
+Read_data1_EX_in		:in std_logic_vector(data_parallelism-1 downto 0);
+Read_data2_EX_in		:in std_logic_vector(data_parallelism-1 downto 0);
+imm30_EX_in				:in std_logic;
+funct3_EX_in			:in std_logic_vector(funct-1 downto 0);
+rd_EX_in				:in std_logic_vector(dest_reg-1 downto 0);
+ALUsrc_EX_in			:in std_logic_vector(alu_src-1 downto 0);		--sel mux 3
+ALU_op_EX_in			:in std_logic_vector(aluOP-1 downto 0);
+ALU_backward_MEM_out	:in std_logic_vector(data_parallelism-1 downto 0);
+muxout_backward_WB_out	:in std_logic_vector(data_parallelism-1 downto 0);
 	
 --out 
 
-ALUout_EX_out		:std_logic_vector(data_parallelism-1 downto 0);
-ALU_bypass_EX_out	:std_logic_vector(data_parallelism-1 downto 0);
-z_EX_out			:std_logic:
-TAddr_EX_out		:std_logic_vector(instruction_parallelism-1 downto 0);
+ALUout_EX_out		:out std_logic_vector(data_parallelism-1 downto 0);
+ALU_bypass_EX_out	:out std_logic_vector(data_parallelism-1 downto 0);
+z_EX_out			:out std_logic;
+TAddr_EX_out		:out std_logic_vector(instruction_parallelism-1 downto 0);
 
---forwarding unit
+--forwarding unit special inputs
 
-rs1_EX_in			:std_logic_vector(data_parallelism-1 downto 0);
-rs2_EX_in			:std_logic_vector(data_parallelism-1 downto 0);
-RegWrite_MEM_in		:std_logic;
-RegWrite_WB_in		:std_logic;
-rd_MEM_in			:std_logic_vector(dest_reg-1 downto 0);
-rd_WB_in			:std_logic_vector(dest_reg-1 downto 0);
+rs1_EX_in			:in std_logic_vector(source_reg-1 downto 0);
+rs2_EX_in			:in std_logic_vector(source_reg-1 downto 0);
+RegWrite_MEM_in		:in std_logic;
+RegWrite_WB_in		:in std_logic;
+rd_MEM_in			:in std_logic_vector(dest_reg-1 downto 0);
+rd_WB_in			:in std_logic_vector(dest_reg-1 downto 0)
 
 );
-
+end entity;
 
 architecture structural of ex_stage is 
 
-	signal shamt_s		:std_logic_vector(srx-1 downto 0);
-	signal ALU_ctr  	:std_logic_vector(alu_ctrl-1 downto 0);
-	signal M1_out		:std_logic_vector(data_parallelism-1 downto 0);
-	signal M3_out		:std_logic_vector(data_parallelism-1 downto 0);
-	signal forward1_s   :std_logic_vector(mux_ctrl-1 downto 0);
-	signal forward2_s   :std_logic_vector(mux_ctrl-1 downto 0);
-	signal ALU_in1_s	:std_logic_vector(data_parallelism-1 downto 0);
-	signal ALU_in2_s	:std_logic_vector(data_parallelism-1 downto 0);
-	signal M2_out_s		:std_logic_vector(data_parallelism-1 downto 0);
+	signal shamt_s					:std_logic_vector(srx-1 downto 0);
+	signal ALU_ctr  				:std_logic_vector(alu_ctrl-1 downto 0);
+	--signal M1_out					:std_logic_vector(data_parallelism-1 downto 0);
+	--signal M3_out					:std_logic_vector(data_parallelism-1 downto 0);
+	signal forward1_s   			:std_logic_vector(mux_ctrl-1 downto 0);
+	signal forward2_s   			:std_logic_vector(mux_ctrl-1 downto 0);
+	signal ALU_in1_s				:std_logic_vector(data_parallelism-1 downto 0);
+	signal ALU_in2_s				:std_logic_vector(data_parallelism-1 downto 0);
+	signal M2_out_s					:std_logic_vector(data_parallelism-1 downto 0);
+	
 
 	component ALU
 	port(
@@ -97,21 +99,22 @@ architecture structural of ex_stage is
 	end component;
 	
 	component mux31
-	port
+	port(
 		in1		:in std_logic_vector(data_parallelism-1 downto 0);
 		in2		:in std_logic_vector(data_parallelism-1 downto 0);
 		in3		:in std_logic_vector(data_parallelism-1 downto 0);
-		sel		:in std_logic_vector(mux_ctrl downto 0); --2 bit selection
-		output	:out std_logic_vector(data_parallelism-1 downto 0);
+		sel		:in std_logic_vector(mux_ctrl-1 downto 0); --2 bit selection
+		output	:out std_logic_vector(data_parallelism-1 downto 0)
 	);
+	end component;
 	
 	begin
 	
 	mux1 : mux31 
 	port map(
 	in1		=>Read_data1_EX_in,
-	in2		
-	in3		
+	in2		=>ALU_backward_MEM_out,
+	in3		=>muxout_backward_WB_out,
     sel		=>forward1_s,    				
     output	=>ALU_in1_s               
 	);     
@@ -119,9 +122,9 @@ architecture structural of ex_stage is
 	mux2 : mux31  
 	port map(
 	in1		=>Read_data2_EX_in,
-	in2		
-	in3		
-    sel		=>forward1_s,
+	in2		=>ALU_backward_MEM_out,
+	in3		=>muxout_backward_WB_out,
+    sel		=>forward2_s,
     output	=>M2_out_s
 	);
 	
@@ -136,10 +139,10 @@ architecture structural of ex_stage is
 	
 	ALUcomp : ALU
 	port map(
-	in1    => M1_out,
-	in2    => M3_out,
-	output => ALU_op_EX_in,
-	z      => z, 
+	in1    => ALU_in1_s,
+	in2    => ALU_in2_s,
+	output => ALUout_EX_out,
+	z      => z_EX_out, 
 	ctrl   => ALU_ctr,
 	shamt  => shamt_s,
 	rst    => rst
@@ -174,7 +177,10 @@ architecture structural of ex_stage is
 	);
 	
 	
-
+	shamt_s<=imm_EX_in(24 downto 20); -- assign shamt (instruction is not sign extended)
+	ALU_bypass_EX_out<=M2_out_s; -- connect to the selection of 2n mux
+	
+	end structural;
 
 
 	

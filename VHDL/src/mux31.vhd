@@ -6,12 +6,12 @@ library work;
 use work.risc_package.all;
 
 entity mux31 is
-	port
+	port(
 		in1		:in std_logic_vector(data_parallelism-1 downto 0);
 		in2		:in std_logic_vector(data_parallelism-1 downto 0);
 		in3		:in std_logic_vector(data_parallelism-1 downto 0);
-		sel		:in std_logic_vector(mux_ctrl downto 0); --2 bit selection
-		output	:out std_logic_vector(data_parallelism-1 downto 0);
+		sel		:in std_logic_vector(mux_ctrl-1 downto 0); --2 bit selection
+		output	:out std_logic_vector(data_parallelism-1 downto 0)
 	);
 end entity;
 	
