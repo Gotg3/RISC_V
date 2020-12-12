@@ -12,7 +12,6 @@ port(
 	output :out std_logic_vector(data_parallelism-1 downto 0);
 	z      :out std_logic;
 	ctrl   :in std_logic_vector(alu_ctrl-1 downto 0);
-	shamt  :in std_logic_vector(srx-1 downto 0);
 	rst    :in std_logic
 	
 	);
@@ -26,7 +25,8 @@ end entity;
 	signal z_s      :std_logic:='0';
 	signal shamt_s	:std_logic_vector(srx-1 downto 0);
 	--signal sub		:signed(data_parallelism-1 downto 0):=(others=>'0'); --sub of in1 and in2
-	signal zeros	:std_logic_vector(data_parallelism-1 downto 0):=(others=>'0');
+	signal one		:integer := 1;
+	signal zero		:integer := 0;
 	
 	begin
 	
@@ -73,10 +73,10 @@ end entity;
 						
 									if(signed(in1_s) <= signed(in2_s)) then 
 										
-										output_s<=(others=>'1');
+										output_s<=std_logic_vector(to_signed(one, output_s'length));
 										z_s<='0';
 									else
-										output_s<=(others=>'0');
+										output_s<=std_logic_vector(to_signed(zero, output_s'length));
 										z_s<='0';
 									end if;
 									
@@ -122,7 +122,7 @@ end entity;
 		
 		in1_s<=in1;
 		in2_s<=in2;
-		shamt_s<=shamt;
+		shamt_s<=in2_s(24 downto 20); --takes shamt from imm
 		output<=output_s;
 		z<=z_s;
 		
