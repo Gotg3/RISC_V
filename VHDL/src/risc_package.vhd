@@ -4,7 +4,8 @@ use ieee.numeric_std.all;
 
 package risc_package is
 
-    constant out_ctrl                  : integer :=7; -- numebr of bits at the output of the CU (VA CAMBIATO IL VALORE, QUESTO è MESSO SOLO DI PROVA, POI VANNO CONTEGGIATI QUANTI SEGNALI ABBIAMO)
+	constant opcode_size              : integer :=7; 
+    constant out_ctrl                  : integer :=14; -- number of bits at the output of the CU 
 	constant source_reg 			   : integer :=5; --source bits
 	constant dest_reg				   : integer :=5; --destination bits
     constant mux_ctrl 				   : integer :=2;   --mux control bit EX stage
