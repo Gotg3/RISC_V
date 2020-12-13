@@ -26,31 +26,35 @@ architecture structural of RISCV is
 
 	component EX_stage
 	port(
-		--in	
 		rst						:in std_logic;
-		PC_EX_in				:in std_logic_vector(instruction_parallelism-1 downto 0);
+		PC_EX_in				   :in std_logic_vector(instruction_parallelism-1 downto 0);
 		imm_EX_in				:in std_logic_vector(data_parallelism-1 downto 0);
 		Read_data1_EX_in		:in std_logic_vector(data_parallelism-1 downto 0);
 		Read_data2_EX_in		:in std_logic_vector(data_parallelism-1 downto 0);
 		imm30_EX_in				:in std_logic;
 		funct3_EX_in			:in std_logic_vector(funct-1 downto 0);
-		rd_EX_in				:in std_logic_vector(dest_reg-1 downto 0);
+		--rd_EX_in				:in std_logic_vector(dest_reg-1 downto 0);
 		ALUsrc_EX_in			:in std_logic_vector(alu_src-1 downto 0);		--sel mux 3
 		ALU_op_EX_in			:in std_logic_vector(aluOP-1 downto 0);
 		ALU_backward_MEM_out	:in std_logic_vector(data_parallelism-1 downto 0);
-		muxout_backward_WB_out	:in std_logic_vector(data_parallelism-1 downto 0);		
+		muxout_backward_WB_out	:in std_logic_vector(data_parallelism-1 downto 0);
+			
 		--out 
-		ALUout_EX_out			:out std_logic_vector(data_parallelism-1 downto 0);
-		ALU_bypass_EX_out		:out std_logic_vector(data_parallelism-1 downto 0);
-		z_EX_out				:out std_logic;
-		TAddr_EX_out			:out std_logic_vector(instruction_parallelism-1 downto 0);	
-		--forwarding unit special inputs	
-		rs1_EX_in				:in std_logic_vector(source_reg-1 downto 0);
-		rs2_EX_in				:in std_logic_vector(source_reg-1 downto 0);
-		RegWrite_MEM_in			:in std_logic;
-		RegWrite_WB_in			:in std_logic;
-		rd_MEM_in				:in std_logic_vector(dest_reg-1 downto 0);
-		rd_WB_in				:in std_logic_vector(dest_reg-1 downto 0)
+		
+		ALUout_EX_out		:out std_logic_vector(data_parallelism-1 downto 0);
+		ALU_bypass_EX_out	:out std_logic_vector(data_parallelism-1 downto 0);
+		z_EX_out			:out std_logic;
+		TAddr_EX_out		:out std_logic_vector(instruction_parallelism-1 downto 0);
+		
+		--forwarding unit special inputs
+		
+		rs1_EX_in			:in std_logic_vector(source_reg-1 downto 0);
+		rs2_EX_in			:in std_logic_vector(source_reg-1 downto 0);
+		RegWrite_MEM_in		:in std_logic;
+		RegWrite_WB_in		:in std_logic;
+		rd_MEM_in			:in std_logic_vector(dest_reg-1 downto 0);
+		rd_WB_in			:in std_logic_vector(dest_reg-1 downto 0)
+
 		
 	);
 	end component;
@@ -84,6 +88,7 @@ architecture structural of RISCV is
 		IF_ID_Write_ID_out		 : out std_logic;
 		q_ID_out				 : out std_logic_vector(out_ctrl -1 downto 0)	
 	);    
+	end component;
 	
 	component reg_instruction_IF_ID
 	port(
@@ -93,6 +98,7 @@ architecture structural of RISCV is
 		d          :  in std_logic_vector(instruction_parallelism-1 downto 0);
 		q          :  out std_logic_vector(instruction_parallelism-1 downto 0)		
 	);    
+	end component;
 	
 	component reg_jal_PC_IF_ID
 	port(
@@ -102,6 +108,7 @@ architecture structural of RISCV is
 		d 			:  in std_logic_vector(instruction_parallelism-1 downto 0);
 		q 			:  out std_logic_vector(instruction_parallelism-1 downto 0)
 	);
+	end component;
 	
 	component reg
 	port(
@@ -110,5 +117,6 @@ architecture structural of RISCV is
 		r   :  in std_logic_vector(n-1 downto 0);
 		q   :  out std_logic_vector(n-1 downto 0)
 	);
+	end component;
 	
 	begin
