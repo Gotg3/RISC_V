@@ -40,6 +40,11 @@ HDU_proc:process(ID_EX_MemRead, rs1, rs2, rd)
 			sel_mux<='0'; --gira il mux sull'ingresso a cui arrivano i controlli della control unit			
 			
 			end if;
+		
+		else 
+		   PCWrite<='0';
+			IF_ID_Write<='0';
+			sel_mux<='0';
 		end if;
 
 end process;

@@ -7,10 +7,10 @@ use work.risc_package.all;
 
 entity CU is 
 	port(
-		 rst: in std_logic; --attivo alto
+		rst: in std_logic; --attivo alto
 	    opcode: in std_logic_vector(opcode_size -1 downto 0);
-		 funct3: in std_logic_vector(funct -1 downto 0);
-		 ctrl: out std_logic_vector(out_ctrl -1 downto 0) -- 3 bits immediate; 3 bits ((2 bits)MemtoReg, (1 bit) RegWrite) wb; 3 bits (MemWrite, MemRead, BranchCtrl) mem; 5 bits (ALU_op (3 bits), ALU_src1(1 bit), ALU_src2(1 bit))ex
+		funct3: in std_logic_vector(funct -1 downto 0);
+		ctrl: out std_logic_vector(out_ctrl -1 downto 0) -- 3 bits immediate; 4 bits ((3 bits)MemtoReg, (1 bit) RegWrite) wb; 3 bits (MemWrite, MemRead, BranchCtrl) mem; 5 bits (ALU_op (3 bits), ALU_src1(1 bit), ALU_src2(1 bit))ex
 	);
 end CU;
 
