@@ -18,20 +18,20 @@ architecture  behavioural of PC is
 
 begin
 
-	process(clk, rst, PC_write)
+	process(clk, rst)
 	begin
 	
 		if (rst = '1') then
 		
 			PC_out <= (others => '0');
 		
-		else
+		elsif(clk'event and clk = '1') then
 		
-		if((clk'event and clk = '1') and PC_write='0') then
+			if( PC_write = '1') then
 			
-			PC_out <= instruction;					
-		
-		end if;
+				PC_out <= instruction;					
+		 
+			end if;
 		end if;
 	end process;
 end behavioural;
