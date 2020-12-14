@@ -1,0 +1,37 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+library work;
+use work.risc_package.all;
+
+entity PC is
+port (
+        clk: in std_logic;
+	    rst: in std_logic;
+		PC_write: in std_logic;--enable register
+		instruction: in std_logic_vector(instruction_parallelism -1 downto 0);
+		PC_out:  out std_logic_vector(instruction_parallelism-1 downto 0));
+end PC;
+
+architecture  behavioural of PC is
+
+begin
+
+	process(clk, rst, PC_write)
+	begin
+	
+		if (rst = '1') then
+		
+			PC_out <= (others => '0');
+		
+		else
+		
+		if((clk'event and clk = '1') and PC_write='0') then
+			
+			PC_out <= instruction;					
+		
+		end if;
+		end if;
+	end process;
+end behavioural;
