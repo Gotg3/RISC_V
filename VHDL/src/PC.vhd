@@ -9,9 +9,9 @@ entity PC is
 				rst: 			        in std_logic;
 				PC_src:		        in std_logic;
 				PC_write:           in std_logic;  --enable register
-				instruction: 	     in std_logic_vector(instruction_parallelism-1 downto 0);
+				instruction: 	     buffer std_logic_vector(instruction_parallelism-1 downto 0);
 				branch_instruction: in std_logic_vector(instruction_parallelism-1 downto 0);
-				PC_out:  	        out std_logic_vector(instruction_parallelism-1 downto 0));
+				PC_out:  	        buffer std_logic_vector(instruction_parallelism-1 downto 0));
 end PC;
 
 architecture behavioural of PC is
