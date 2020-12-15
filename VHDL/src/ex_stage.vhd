@@ -7,8 +7,8 @@ use work.risc_package.all;
 
 entity EX_stage is
 port(
---in
 
+--in
 rst						:in std_logic;
 PC_EX_in				   :in std_logic_vector(instruction_parallelism-1 downto 0);
 imm_EX_in				:in std_logic_vector(data_parallelism-1 downto 0);
@@ -16,27 +16,50 @@ Read_data1_EX_in		:in std_logic_vector(data_parallelism-1 downto 0);
 Read_data2_EX_in		:in std_logic_vector(data_parallelism-1 downto 0);
 imm30_EX_in				:in std_logic;
 funct3_EX_in			:in std_logic_vector(funct-1 downto 0);
---rd_EX_in				:in std_logic_vector(dest_reg-1 downto 0);
-ALUsrc_EX_in			:in std_logic_vector(alu_src-1 downto 0);		--sel mux 3
-ALU_op_EX_in			:in std_logic_vector(aluOP-1 downto 0);
+rd_EX_in					:in std_logic_vector(dest_reg-1 downto 0);
 ALU_backward_MEM_out	:in std_logic_vector(data_parallelism-1 downto 0);
 muxout_backward_WB_out	:in std_logic_vector(data_parallelism-1 downto 0);
-	
+JAL_PC_4_EX_in			:in std_logic_vector(instruction_parallelism-1 downto 0);
+
+-- in EX
+ALUsrc1_EX_in			:in std_logic;
+ALUsrc2_EX_in			:in std_logic;
+ALU_op_EX_in			:in std_logic_vector(aluOP-1 downto 0);
+
+
+--in WB
+MemtoReg_EX_in			:in std_logic;
+
+--in M
+MemWrite_EX_in			:in std_logic;
+MemRead_EX_in			:in std_logic;
+BranchCtr_EX_in		:in std_logic;
+
 --out 
 
 ALUout_EX_out		:out std_logic_vector(data_parallelism-1 downto 0);
 ALU_bypass_EX_out	:out std_logic_vector(data_parallelism-1 downto 0);
-z_EX_out			:out std_logic;
+z_EX_out				:out std_logic;
 TAddr_EX_out		:out std_logic_vector(instruction_parallelism-1 downto 0);
+rd_EX_out			:out std_logic_vector(dest_reg-1 downto 0);
+JAL_PC_4_EX_out	:out std_logic_vector(instruction_parallelism-1 downto 0);
+
+--out WB
+MemtoReg_EX_out	:out std_logic;
+
+--out M
+MemWrite_EX_out	:out std_logic;
+MemRead_EX_out		:out std_logic;
+BranchCtr_EX_out	:out std_logic;
 
 --forwarding unit special inputs
 
 rs1_EX_in			:in std_logic_vector(source_reg-1 downto 0);
 rs2_EX_in			:in std_logic_vector(source_reg-1 downto 0);
-RegWrite_MEM_in		:in std_logic;
+RegWrite_MEM_in	:in std_logic;
 RegWrite_WB_in		:in std_logic;
 rd_MEM_in			:in std_logic_vector(dest_reg-1 downto 0);
-rd_WB_in			:in std_logic_vector(dest_reg-1 downto 0)
+rd_WB_in				:in std_logic_vector(dest_reg-1 downto 0)
 
 );
 end entity;
@@ -49,10 +72,16 @@ architecture structural of EX_stage is
 	signal forward2_s   			:std_logic_vector(mux_ctrl-1 downto 0);
 	signal ALU_in1_s				:std_logic_vector(data_parallelism-1 downto 0);
 	signal ALU_in2_s				:std_logic_vector(data_parallelism-1 downto 0);
-	signal M2_out_s					:std_logic_vector(data_parallelism-1 downto 0);
-	signal M1_out_s					:std_logic_vector(data_parallelism-1 downto 0);
+	signal M2_out_s				:std_logic_vector(data_parallelism-1 downto 0);
+	signal M1_out_s				:std_logic_vector(data_parallelism-1 downto 0);
 	signal ALUsrc1					:std_logic;
-	signal ALUsrc2					:Std_logic;
+	signal ALUsrc2					:std_logic;
+	signal rd_s						:std_logic_vector(dest_reg-1 downto 0);	
+	signal JAL_PC_4_s				:std_logic_vector(instruction_parallelism-1 downto 0);
+	signal MemtoReg_s				:std_logic;
+	signal MemWrite_s				:std_logic;
+	signal MemRead_s				:std_logic;
+	signal BranchCtr_s				:std_logic;
 	
 	component ALU
 	port(
@@ -68,19 +97,19 @@ architecture structural of EX_stage is
 	component ALU_control
 	port
 	(
-	ALUop	:in std_logic_vector(aluOP-1 downto 0);
-	imm30	:in std_logic;
+	ALUop		:in std_logic_vector(aluOP-1 downto 0);
+	imm30		:in std_logic;
 	funct3	:in std_logic_vector(funct-1 downto 0);
 	rst		:in std_logic;
-	ctrlALU :out std_logic_vector(alu_ctrl-1 downto 0)
+	ctrlALU 	:out std_logic_vector(alu_ctrl-1 downto 0)
 	);
 	end component;
 	
 	component AddSum
 	port(
-	BA  	:in std_logic_vector(instruction_parallelism-1 downto 0);
+	BA  		:in std_logic_vector(instruction_parallelism-1 downto 0);
 	Offset	:in std_logic_vector(instruction_parallelism-1 downto 0);
-	TA		:out std_logic_vector(instruction_parallelism-1 downto 0)
+	TA			:out std_logic_vector(instruction_parallelism-1 downto 0)
 	);
 	end component;
 	
@@ -190,11 +219,41 @@ architecture structural of EX_stage is
     forward1 		=>  forward1_s,
     forward2        =>  forward2_s
 	);
-	
-	
-	ALUsrc1<=ALUsrc_EX_in(1); --in ALUsrc src1 is the MSB
-	ALUsrc2<=ALUsrc_EX_in(0);
+	--rd connection
+	rd_s<=rd_EX_in;
+	rd_EX_out<=rd_s;
+	-----
+	--JAL connection
+	JAL_PC_4_s<=JAL_PC_4_EX_in;
+	JAL_PC_4_EX_out<=JAL_PC_4_s;
+	---
+	--ALUsrc connection	
+	ALUsrc1<=ALUsrc1_EX_in;
+	ALUsrc2<=ALUsrc2_EX_in;
+	--
+	--ALU_bypass connection
 	ALU_bypass_EX_out<=M2_out_s; -- connect to the selection of 2n mux
+	--
+	--MemtoReg connection
+	MemtoReg_s<=MemtoReg_EX_in;
+	MemtoReg_EX_out<=MemtoReg_s;
+	--
+	--MemWrite connection
+	MemWrite_s<=MemWrite_EX_in;
+	MemWrite_EX_out<=MemWrite_s;
+	--
+	--MemRead connection
+	MemRead_s<=MemRead_EX_in;
+	MemRead_EX_out<=MemRead_s;
+	--
+	--BranchCtr connection
+	BranchCtr_s<=BranchCtr_EX_in;
+	BranchCtr_EX_out<=BranchCtr_s;
+	--
+	
+	
+	
+	
 	
 	end structural;
 
