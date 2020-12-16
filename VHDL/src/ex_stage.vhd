@@ -137,11 +137,12 @@ architecture structural of EX_stage is
 	end component;
 	
 	component mux21
+	generic(n: integer);
 	port(
-		in1		:in std_logic_vector(data_parallelism-1 downto 0);
-		in2		:in std_logic_vector(data_parallelism-1 downto 0);
+		in1		:in std_logic_vector(n-1 downto 0);
+		in2		:in std_logic_vector(n-1 downto 0);
 		sel		:in std_logic;
-		output	:out std_logic_vector(data_parallelism-1 downto 0)
+		output	:out std_logic_vector(n-1 downto 0)
 	);
 	end component;
 	
@@ -166,6 +167,7 @@ architecture structural of EX_stage is
 	);
 	
 	mux3_ex : mux21
+	generic map ( n=> data_parallelism)
 	port map(
 	in1			=> M2_out_s,  --1
 	in2			=> imm_EX_in, --0
@@ -174,6 +176,7 @@ architecture structural of EX_stage is
 	);
 	
 	mux4_Ex : mux21
+	generic map ( n=> data_parallelism)
 	port map(
 	in1			=> M1_out_s, --0
 	in2			=> PC_EX_in, --1
