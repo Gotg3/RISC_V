@@ -25,8 +25,8 @@ end entity;
 	signal z_s      :std_logic:='0';
 	signal shamt_s	:std_logic_vector(srx-1 downto 0);
 	--signal sub		:signed(data_parallelism-1 downto 0):=(others=>'0'); --sub of in1 and in2
-	signal one		:integer := 1;
-	signal zero		:integer := 0;
+	constant one		:integer := 1;
+	constant zero		:integer := 0;
 	
 	begin
 	
