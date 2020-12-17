@@ -6,7 +6,7 @@ use work.risc_package.all;
 
 entity instruction_memory is
 	port (
-			ADDR: 	 in std_logic_vector(5 downto 0);
+			ADDR: 	 in std_logic_vector(address_parallelism-1 downto 0);
 			DATA_IN:  in std_logic_vector(instruction_parallelism-1 downto 0);
 			RAM_WR:   in std_logic;
 			CLK: 		 in std_logic;
@@ -16,26 +16,43 @@ end instruction_memory;
 
 architecture Behavioral of instruction_memory is
 
-type RAM_ARRAY is array (0 to 34) of std_logic_vector (instruction_parallelism-1 downto 0);
+type RAM_ARRAY is array (0 to 33) of std_logic_vector (instruction_parallelism-1 downto 0);
 
 signal RAM: RAM_ARRAY :=(
-   x"0000",x"0000",-- 0x00: 
-   x"0000",x"0000",-- 0x02:
-   x"0000",x"0000",-- 0x04: 
-   x"0000",x"0000",-- 0x06: 
-   x"0000",x"0000",-- 0x08: 
-   x"0000",x"0000",-- 0x0A: 
-   x"0000",x"0000",-- 0x0C: 
-   x"0000",x"0000",-- 0x0E: 
-   x"0000",x"0000",-- 0x10: 
-   x"0000",x"0000",-- 0x12: 
-   x"0000",x"0000",-- 0x14: 
-   x"0000",x"0000",-- 0x16: 
-   x"0000",x"0000",-- 0x18: 
-   x"0000",x"0000",-- 0x1A: 
-   x"0000",x"0000",-- 0x1C: 
-   x"0000",x"0000",-- 0x1E: 
-   x"0000",x"0000" -- 0x20: 
+   x"00000000",
+   x"00000000",
+   x"00000000", 
+   x"00000000", 
+   x"00000000",
+   x"00000000",
+   x"00000000",
+   x"00000000", 
+   x"00000000",
+   x"00000000", 
+   x"00000000", 
+   x"00000000",
+   x"00000000",
+   x"00000000", 
+   x"00000000", 
+   x"00000000",
+   x"00000000", 
+	x"00000000",
+   x"00000000",
+   x"00000000", 
+   x"00000000", 
+   x"00000000",
+   x"00000000",
+   x"00000000",
+   x"00000000", 
+   x"00000000",
+   x"00000000", 
+   x"00000000", 
+   x"00000000",
+   x"00000000",
+   x"00000000", 
+   x"00000000", 
+   x"00000000",
+   x"00000000" 
    ); 
 begin
 

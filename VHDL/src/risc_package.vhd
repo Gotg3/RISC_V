@@ -15,6 +15,7 @@ package risc_package is
 	constant trailing_zeros            : integer :=12;  -- trailing zeros for filling operation
     constant sel_imm				   : integer :=3; 	-- immediate selector
 	constant instruction_parallelism   : integer :=32;  -- instruction parallelism
+	constant address_parallelism : integer :=6; --addressing for instruction memory
  	constant number_regs			   : integer :=32;  -- number of regs in RF
 	constant data_parallelism		   : integer :=32;	-- data parallelism
 	constant length_in_RF			   : integer :=5;   -- number of bits of the address at the output of the register file
