@@ -1,0 +1,24 @@
+ Address    Code        Basic                     Source
+
+0x00400000  0x00700813  addi x16,x0,0x0000000723   	li x16,7          # put 7 in x16 
+0x00400004  0x0fc10217  auipc x4,0x0000fc10   24   	la x4,v           # put in x4 the address of v
+0x00400008  0xffc20213  addi x4,x4,0xfffffffc      
+0x0040000c  0x0fc10297  auipc x5,0x0000fc10   25   	la x5,m           # put in x5 the address of m
+0x00400010  0x01028293  addi x5,x5,0x00000010      
+0x00400014  0x400006b7  lui x13,0x00040000    26   	li x13,0x3fffffff # init x13 with max pos
+0x00400018  0xfff68693  addi x13,x13,0xfffffff     
+0x0040001c  0x02080863  beq x16,x0,0x00000018 28   	beq x16,x0,done   # check all elements have been tested
+0x00400020  0x00022403  lw x8,0x00000000(x4)  29   	lw x8,0(x4)       # load new element in x8
+0x00400024  0x41f45493  srai x9,x8,0x0000001f 30   	srai x9,x8,31     # apply shift to get sign mask in x9
+0x00400028  0x00944533  xor x10,x8,x9         31   	xor x10,x8,x9     # x10 = sign(x8)^x8
+0x0040002c  0x0014f493  andi x9,x9,0x00000001 32   	andi x9,x9,0x1    # x9 &= 0x1 (carry in)
+0x00400030  0x00950533  add x10,x10,x9        33   	add x10,x10,x9    # x10 += x9 (add the carry in)
+0x00400034  0x00420213  addi x4,x4,0x00000004 34   	addi x4,x4,0x4	  # point to next element
+0x00400038  0xfff80813  addi x16,x16,0xfffffff35   	addi x16,x16,-1   # decrease x16 by 1
+0x0040003c  0x00d525b3  slt x11,x10,x13       36   	slt x11,x10,x13   # x11 = (x10 < x13) ? 1 : 0
+0x00400040  0xfc058ee3  beq x11,x0,0xffffffee 37   	beq x11,x0,loop   # next element
+0x00400044  0x000506b3  add x13,x10,x0        38   	add x13,x10,x0    # update min
+0x00400048  0xfd5ff0ef  jal x1,0xffffffea     39   	jal loop          # next element
+0x0040004c  0x00d2a023  sw x13,0x00000000(x5) 41   	sw x13,0(x5)      # store the result	
+0x00400050  0x000000ef  jal x1,0x00000000     43   	jal endc  	  # infinite loop
+0x00400054  0x00000013  addi x0,x0,0x00000000 44   	addi x0,x0,0
