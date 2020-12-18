@@ -28,7 +28,7 @@ ALU_op_EX_in			:in std_logic_vector(aluOP-1 downto 0);
 
 
 --in WB
-MemtoReg_EX_in			:in std_logic;
+WB_EX_in			:in std_logic_vector(WB_length-1 downto 0);
 
 --in M
 MemWrite_EX_in			:in std_logic;
@@ -45,7 +45,7 @@ rd_EX_out			:out std_logic_vector(dest_reg-1 downto 0);
 JAL_PC_4_EX_out	:out std_logic_vector(instruction_parallelism-1 downto 0);
 
 --out WB
-MemtoReg_EX_out	:out std_logic;
+WB_EX_out	:out std_logic_vector(WB_length-1 downto 0);
 
 --out M
 MemWrite_EX_out	:out std_logic;
@@ -72,13 +72,13 @@ architecture structural of EX_stage is
 	signal forward2_s   			:std_logic_vector(mux_ctrl-1 downto 0);
 	signal ALU_in1_s				:std_logic_vector(data_parallelism-1 downto 0);
 	signal ALU_in2_s				:std_logic_vector(data_parallelism-1 downto 0);
-	signal M2_out_s				:std_logic_vector(data_parallelism-1 downto 0);
-	signal M1_out_s				:std_logic_vector(data_parallelism-1 downto 0);
+	signal M2_out_s					:std_logic_vector(data_parallelism-1 downto 0);
+	signal M1_out_s					:std_logic_vector(data_parallelism-1 downto 0);
 	signal ALUsrc1					:std_logic;
 	signal ALUsrc2					:std_logic;
 	signal rd_s						:std_logic_vector(dest_reg-1 downto 0);	
 	signal JAL_PC_4_s				:std_logic_vector(instruction_parallelism-1 downto 0);
-	signal MemtoReg_s				:std_logic;
+	signal WB_EX_s					:std_logic_vector(WB_length-1 downto 0);
 	signal MemWrite_s				:std_logic;
 	signal MemRead_s				:std_logic;
 	signal BranchCtr_s				:std_logic;
@@ -237,9 +237,9 @@ architecture structural of EX_stage is
 	--ALU_bypass connection
 	ALU_bypass_EX_out<=M2_out_s; -- connect to the selection of 2n mux
 	--
-	--MemtoReg connection
-	MemtoReg_s<=MemtoReg_EX_in;
-	MemtoReg_EX_out<=MemtoReg_s;
+	--WB connection
+	WB_EX_s<=WB_EX_in;
+	WB_EX_out<=WB_EX_s;
 	--
 	--MemWrite connection
 	MemWrite_s<=MemWrite_EX_in;
