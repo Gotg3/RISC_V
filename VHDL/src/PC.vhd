@@ -5,13 +5,13 @@ use ieee.numeric_std.all;
 use work.risc_package.all;
 
 entity PC is
-	  port  (clk: 			                in std_logic;
+	  port  (clk: 			               		    in std_logic;
 				rst: 			        		    in std_logic;
-				PC_src:		                in std_logic;
-				PC_write:           			 in std_logic;  --enable register
-				branch_instruction_address: in std_logic_vector(address_parallelism-1 downto 0);
-				PC_out:  	        			 out std_logic_vector(address_parallelism-1 downto 0);
-				seq_address:					 out std_logic_vector(address_parallelism-1 downto 0));
+				PC_src:		                        in std_logic;
+				PC_write:           		        in std_logic;  --enable register
+				branch_instruction_address:         in std_logic_vector(address_parallelism-1 downto 0);
+				PC_out:  	        			    out std_logic_vector(address_parallelism-1 downto 0);
+				seq_address:					    out std_logic_vector(address_parallelism-1 downto 0));
 end PC;
 
 architecture behavioural of PC is
