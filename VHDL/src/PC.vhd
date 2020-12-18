@@ -31,7 +31,7 @@ end component;
 begin
 
 
-next_address <=  std_logic_vector(unsigned(current_address) + instruction_parallelism); --PC+4 
+next_address <=  std_logic_vector(unsigned(current_address) + 4); --PC+4 
 
 mux: mux21 generic map(address_parallelism) port map(next_address, branch_instruction_address, PC_src, tmp_address);
 
