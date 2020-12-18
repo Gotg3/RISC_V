@@ -31,9 +31,7 @@ ALU_op_EX_in			:in std_logic_vector(aluOP-1 downto 0);
 WB_EX_in			:in std_logic_vector(WB_length-1 downto 0);
 
 --in M
-MemWrite_EX_in			:in std_logic;
-MemRead_EX_in			:in std_logic;
-BranchCtr_EX_in		:in std_logic;
+M_EX_in			    :in std_logic_vector(M_length-1 downto 0);
 
 --out 
 
@@ -48,9 +46,7 @@ JAL_PC_4_EX_out	:out std_logic_vector(instruction_parallelism-1 downto 0);
 WB_EX_out	:out std_logic_vector(WB_length-1 downto 0);
 
 --out M
-MemWrite_EX_out	:out std_logic;
-MemRead_EX_out		:out std_logic;
-BranchCtr_EX_out	:out std_logic;
+M_EX_out			    :out std_logic_vector(M_length-1 downto 0);
 
 --forwarding unit special inputs
 
@@ -79,9 +75,7 @@ architecture structural of EX_stage is
 	signal rd_s						:std_logic_vector(dest_reg-1 downto 0);	
 	signal JAL_PC_4_s				:std_logic_vector(instruction_parallelism-1 downto 0);
 	signal WB_EX_s					:std_logic_vector(WB_length-1 downto 0);
-	signal MemWrite_s				:std_logic;
-	signal MemRead_s				:std_logic;
-	signal BranchCtr_s				:std_logic;
+	signal M_EX_s                   :std_logic_vector(M_length-1 downto 0);
 	
 	component ALU
 	port(
@@ -241,19 +235,9 @@ architecture structural of EX_stage is
 	WB_EX_s<=WB_EX_in;
 	WB_EX_out<=WB_EX_s;
 	--
-	--MemWrite connection
-	MemWrite_s<=MemWrite_EX_in;
-	MemWrite_EX_out<=MemWrite_s;
-	--
-	--MemRead connection
-	MemRead_s<=MemRead_EX_in;
-	MemRead_EX_out<=MemRead_s;
-	--
-	--BranchCtr connection
-	BranchCtr_s<=BranchCtr_EX_in;
-	BranchCtr_EX_out<=BranchCtr_s;
-	--
-	
+	--M connection
+	M_EX_s<=M_EX_in;
+	M_EX_out<=M_EX_s;
 	
 	
 	
