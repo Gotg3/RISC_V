@@ -10,8 +10,9 @@ entity IF_stage is
 				PC_src:		                in std_logic;
 				PC_write:                   in std_logic;  --enable register
 				branch_instruction_address: in std_logic_vector(address_parallelism-1 downto 0); --from branch pred
+				out_mux_IF_out:				 out std_logic_vector(address_parallelism-1 downto 0): --to IM
 				next_seq_address:				 out std_logic_vector(address_parallelism-1 downto 0); --to WB
-				current_address:            out std_logic_vector(address_parallelism-1 downto 0)); --to IM
+				current_address:            out std_logic_vector(address_parallelism-1 downto 0));--to IF/ID pipe reg
 end IF_stage;
 
 architecture behavioral of IF_stage is
@@ -42,6 +43,7 @@ process(clk, rst)
 	end if;
 	end process;
 	
+out_mux_IF_out <=  tmp_address;
 current_address <= current_tmp_address;
 next_seq_address <= next_tmp_address;
 	
