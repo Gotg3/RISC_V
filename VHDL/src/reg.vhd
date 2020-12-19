@@ -6,10 +6,11 @@ library work;
 use work.risc_package.all;
 
 entity reg is
+generic ( n: integer := 32 );
 port (
     clk: in std_logic;
 	rst: in std_logic;
-    r :  in std_logic_vector(n-1 downto 0);
+    d :  in std_logic_vector(n-1 downto 0);
 	q :  out std_logic_vector(n-1 downto 0));
 end reg;
 
@@ -20,7 +21,7 @@ begin
 		if (rst = '1') then
 				q <= (others => '0');
 			elsif (clk'event and clk = '1') then
-				q <= r;
+				q <= d;
 		    end if;
 	end process;
 end behavioural;
