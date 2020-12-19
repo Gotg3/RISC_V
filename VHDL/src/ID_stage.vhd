@@ -11,7 +11,6 @@ entity ID_stage is
 	    clk					 : in  std_logic;
 		rst					 : in  std_logic;--reset attivo alto
 		RegWrite_ID_in		 : in  std_logic;
-		read_en_ID_in		 : in  std_logic:='1';--sempre abilitato
 		ID_EX_MemRead_ID_in  : in std_logic;-- attivo alto
 		jal_ID_in			 : in  std_logic_vector(instruction_parallelism - 1 downto 0);
 		pc_ID_in			 : in  std_logic_vector(instruction_parallelism - 1 downto 0);
@@ -19,7 +18,6 @@ entity ID_stage is
 		write_data_ID_in	 : in  std_logic_vector(data_parallelism - 1 downto 0);
 		instruction_ID_in    : in  std_logic_vector(instruction_parallelism - 1 downto 0);
      	rd_backward_ID_in    : in std_logic_vector(source_reg - 1 downto 0);
-		zeros_ID_in          : in std_logic_vector(out_ctrl -1 downto 0):=(others=>'0');
 		--outputs
 		jal_ID_out			 : out std_logic_vector(instruction_parallelism - 1 downto 0);
 		pc_ID_out		     : out std_logic_vector(instruction_parallelism - 1 downto 0);
@@ -32,7 +30,9 @@ entity ID_stage is
 		IF_ID_Write_ID_out   : out std_logic;
 		WB_ID_out            : out std_logic_vector(WB_length -1 downto 0);
 		M_ID_out             : out std_logic_vector(M_length -1 downto 0);
-		EX_ID_out            : out std_logic_vector(EX_length -1 downto 0)
+		EX_ID_out            : out std_logic_vector(EX_length -1 downto 0);
+		rs1_ID_out           : out std_logic_vector(source_reg - 1 downto 0);
+		rs2_ID_out           : out std_logic_vector(source_reg - 1 downto 0)
 	);    
 end ID_stage; 
 
@@ -95,15 +95,17 @@ port(
     );
 end component;
 
-signal clk_s, rst_s, RegWrite_s, read_en_s, ID_EX_MemRead_s, PCWrite_s, IF_ID_Write_s, sel_s  : std_logic;
+signal clk_s, rst_s, RegWrite_s, ID_EX_MemRead_s, PCWrite_s, IF_ID_Write_s, sel_s  : std_logic;
 signal read_register_1_s, read_register_2_s, write_register_s, rd_backward_s                  : std_logic_vector(length_in_RF -1 downto 0);
 signal write_data_in_s, read_data_1_out_s, read_data_2_out_s   : std_logic_vector(data_parallelism -1 downto 0);
 signal q_s, ctrl_s                                             : std_logic_vector(out_ctrl -1 downto 0); --signal for the mux_ID output
 signal instruction_s                                           : std_logic_vector(instruction_parallelism -1 downto 0);
 signal immediate_s                                             : std_logic_vector(data_parallelism -1 downto 0);
-signal zeros_s                                                 : std_logic_vector(out_ctrl -1 downto 0);
+--signal zeros_s                                                 : std_logic_vector(out_ctrl -1 downto 0);
 signal opcode_s                                                : std_logic_vector(opcode_size -1 downto 0);
 signal funct3_s                                                : std_logic_vector(funct -1 downto 0);
+constant read_en_s                                             : std_logic:='1';
+constant zeros_s                                               : std_logic_vector(out_ctrl -1 downto 0):=(others=>'0');
 
 begin
 
@@ -112,7 +114,7 @@ rst_s <= rst;
 
 --register file signals
 RegWrite_s <= RegWrite_ID_in;
-read_en_s  <= read_en_ID_in;
+--read_en_s  <= read_en_ID_in;
 read_register_1_s <=instruction_ID_in(19 downto 15);
 read_register_2_s <=instruction_ID_in(24 downto 20);
 write_register_s  <= write_register_ID_in;
@@ -129,9 +131,6 @@ ID_EX_MemRead_s<=ID_EX_MemRead_ID_in;
 rd_backward_s<=rd_backward_ID_in;
 PCWrite_ID_out<=PCWrite_s;
 IF_ID_Write_ID_out<=IF_ID_Write_s;
-
---mux_ID
-zeros_s<=zeros_ID_in;
 
 --CU
 opcode_s<=instruction_ID_in(6 downto 0);
@@ -191,5 +190,7 @@ rd_ID_out <= instruction_ID_in(11 downto 7);
 WB_ID_out<=q_s(11 downto 8);
 M_ID_out<=q_s(7 downto 5);
 EX_ID_out<=q_s(4 downto 0);
+rs1_ID_out<=read_register_1_s;
+rs2_ID_out<=read_register_2_s ;
 
 end behavioural;

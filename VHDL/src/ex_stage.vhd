@@ -37,16 +37,18 @@ M_EX_in			    :in std_logic_vector(M_length-1 downto 0);
 
 ALUout_EX_out		:out std_logic_vector(data_parallelism-1 downto 0);
 ALU_bypass_EX_out	:out std_logic_vector(data_parallelism-1 downto 0);
-z_EX_out				:out std_logic;
+z_EX_out			:out std_logic;
 TAddr_EX_out		:out std_logic_vector(instruction_parallelism-1 downto 0);
 rd_EX_out			:out std_logic_vector(dest_reg-1 downto 0);
-JAL_PC_4_EX_out	:out std_logic_vector(instruction_parallelism-1 downto 0);
+JAL_PC_4_EX_out	    :out std_logic_vector(instruction_parallelism-1 downto 0);
+immediate_EX_out    :out std_logic_vector(data_parallelism-1 downto 0);
 
 --out WB
 WB_EX_out	:out std_logic_vector(WB_length-1 downto 0);
 
 --out M
 M_EX_out			    :out std_logic_vector(M_length-1 downto 0);
+MemRead_out             :out std_logic;--from EX to ID
 
 --forwarding unit special inputs
 
@@ -76,6 +78,7 @@ architecture structural of EX_stage is
 	signal JAL_PC_4_s				:std_logic_vector(instruction_parallelism-1 downto 0);
 	signal WB_EX_s					:std_logic_vector(WB_length-1 downto 0);
 	signal M_EX_s                   :std_logic_vector(M_length-1 downto 0);
+	signal immediate_s              :std_logic_vector(data_parallelism-1 downto 0);
 	
 	component ALU
 	port(
@@ -201,7 +204,7 @@ architecture structural of EX_stage is
 	AddSumcomp : AddSum
 	port map(
 	BA		=>  PC_EX_in,	
-	Offset	=>	imm_EX_in,
+	Offset	=>	immediate_s,
 	TA		=>	TAddr_EX_out
 	);
 	
@@ -231,6 +234,10 @@ architecture structural of EX_stage is
 	--ALU_bypass connection
 	ALU_bypass_EX_out<=M2_out_s; -- connect to the selection of 2n mux
 	--
+	--immediate connection
+	immediate_s<=imm_EX_in;
+	immediate_EX_out<=immediate_s;
+	--
 	--WB connection
 	WB_EX_s<=WB_EX_in;
 	WB_EX_out<=WB_EX_s;
@@ -239,6 +246,7 @@ architecture structural of EX_stage is
 	M_EX_s<=M_EX_in;
 	M_EX_out<=M_EX_s;
 	
+	MemRead_out<=M_EX_s(1);
 	
 	
 	
