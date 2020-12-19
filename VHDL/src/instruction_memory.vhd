@@ -12,6 +12,7 @@ entity instruction_memory is
 			CLK: 		 in std_logic;
 			DATA_OUT: out std_logic_vector(instruction_parallelism-1 downto 0);
 			IF_ID_write:    in std_logic;
+			PC_write:       in std_logic;
 			rst		  : in std_logic
 			);
 end instruction_memory;
@@ -46,27 +47,19 @@ signal RAM: RAM_ARRAY :=(
    ); 
 	
 signal decoded_address, encoded_address : std_logic_vector(address_parallelism-1 downto 0);
-signal data_out_s : std_logic_vector(instruction_parallelism-1 downto 0):=(others=>'0');
-
+signal data_out_s : std_logic_vector(address_parallelism-1 downto 0):=(others=>'0');
+signal PC_out_s   :std_logic_vector(address_parallelism-1 downto 0);
 
 component reg_instruction_IF_ID
 	port (
       clk: in std_logic;
 		rst: in std_logic;
 		IF_ID_write: in std_logic;
-		d :  in std_logic_vector(instruction_parallelism-1 downto 0);
-		q :  out std_logic_vector(instruction_parallelism-1 downto 0));
+		d :  in std_logic_vector(address_parallelism-1 downto 0);
+		q :  out std_logic_vector(address_parallelism-1 downto 0));
 	end component;
 	
-	
-component PC_instr_mem
-	port (
-        clk: in std_logic;
-	    rst: in std_logic;
-		PC_write: in std_logic;--enable register
-		address: in std_logic_vector(instruction_parallelism -1 downto 0);
-		PC_out:  out std_logic_vector(instruction_parallelism-1 downto 0));
-	);
+
    
 	
 begin
@@ -75,17 +68,24 @@ encoded_address <= ADDR;
 decoded_address <= std_logic_vector((unsigned(encoded_address) - "010000000000000000000000")/4);
 
 
+
 process(CLK) begin --in pipe stage
 
 
 if(CLK'EVENT AND CLK='1') then 
  if(RAM_WR='1') then RAM(to_integer(unsigned(decoded_address))) <= DATA_IN; --synchronous write
- else DATA_OUT_s <= RAM(to_integer(unsigned(decoded_address)));
+ else 
+	if( PC_write = '0') then
+	DATA_OUT_s <= RAM(to_integer(unsigned(decoded_address)));
+	end if;
  end if;
 end if;
 end process;
 
-reg_instr_IF_ID : reg_instruction_IF_ID
+
+
+
+reg_instr_IF_ID : reg_instruction_IF_ID --out pipe stage (NOP insertion)
 port map(
 
 	clk=> CLK,
