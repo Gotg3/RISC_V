@@ -18,7 +18,7 @@ end AND_Gate;
 architecture behavioural of AND_Gate is
 
  begin
-    
+
     PCsrc <= z_MEM_in AND BranchCTRL;
 
 end behavioural; 
