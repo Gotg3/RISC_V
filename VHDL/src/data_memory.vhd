@@ -6,11 +6,12 @@ use work.risc_package.all;
 
 entity data_memory is
 	port (
-			ADDR: 	 in std_logic_vector(address_parallelism-1 downto 0);
-			DATA_IN:  in std_logic_vector(data_parallelism-1 downto 0);
-			RAM_WR:   in std_logic;
-			CLK: 		 in std_logic;
-			DATA_OUT: out std_logic_vector(data_parallelism-1 downto 0)
+			ADDR: 	 		in std_logic_vector(address_parallelism-1 downto 0);
+			DATA_IN:  		in std_logic_vector(data_parallelism-1 downto 0);
+			RAM_WR:   		in std_logic;
+			CLK: 			in std_logic;
+			DATA_OUT: 		out std_logic_vector(data_parallelism-1 downto 0);
+			rst:				in std_logic
 			);
 end data_memory;
 
@@ -42,25 +43,45 @@ signal RAM: RAM_ARRAY :=(
 20  =>   "00000000000000000000000000000000", 
 21  =>   "00000000000000000000000000000000"
    ); 
+   
+   
+	
+   
+   
 	
 signal decoded_address, encoded_address : std_logic_vector(address_parallelism-1 downto 0);
+signal data_out_s: std_logic_vector(data_parallelism-1 downto 0):=(others=>'0');
 	 
-begin
+begin 
 
 
 encoded_address <= ADDR;
-decoded_address <= std_logic_vector(unsigned(encoded_address) - "0001100110011011011010110000");
+decoded_address <= std_logic_vector((unsigned(encoded_address) - "10000000000010000000000000000")/4);
 
 
+process(CLK) begin --in pipe stage
 
-process(CLK) begin
 
 if(CLK'EVENT AND CLK='1') then 
  if(RAM_WR='1') then RAM(to_integer(unsigned(decoded_address))) <= DATA_IN; --synchronous write
- else DATA_OUT <= RAM(to_integer(unsigned(decoded_address)));
+ else DATA_OUT_s <= RAM(to_integer(unsigned(decoded_address)));
  end if;
 end if;
+
 end process;
 
+
+
+
+process(clk,rst) begin			--out pipe stage
+	if(rst='1') then 
+		data_out<=(others=>'0');
+	else
+		if(CLK'EVENT AND CLK='1') then 
+		data_out<=data_out_s;
+		end if;
+	end if;
+		
+end process;
 
 end Behavioral;

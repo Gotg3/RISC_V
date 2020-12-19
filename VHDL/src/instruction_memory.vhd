@@ -10,7 +10,9 @@ entity instruction_memory is
 			DATA_IN:  in std_logic_vector(instruction_parallelism-1 downto 0);
 			RAM_WR:   in std_logic;
 			CLK: 		 in std_logic;
-			DATA_OUT: out std_logic_vector(instruction_parallelism-1 downto 0)
+			DATA_OUT: out std_logic_vector(instruction_parallelism-1 downto 0);
+			IF_ID_write:    in std_logic;
+			rst		  : in std_logic
 			);
 end instruction_memory;
 
@@ -36,7 +38,7 @@ signal RAM: RAM_ARRAY :=(
 14 =>   "11111111111110000000100000010011", 
 15 =>   "00000000110101010010010110110011",
 16 =>   "11111100000001011000111011100011", 
-17 =>	  "00000000000001010000011010110011",
+17 =>	 "00000000000001010000011010110011",
 18 =>   "11111101010111111111000011101111",
 19 =>   "00000000110100101010000000100011", 
 20 =>   "00000000000000000000000011101111", 
@@ -44,22 +46,54 @@ signal RAM: RAM_ARRAY :=(
    ); 
 	
 signal decoded_address, encoded_address : std_logic_vector(address_parallelism-1 downto 0);
+signal data_out_s : std_logic_vector(instruction_parallelism-1 downto 0):=(others=>'0');
+
+
+component reg_instruction_IF_ID
+	port (
+      clk: in std_logic;
+		rst: in std_logic;
+		IF_ID_write: in std_logic;
+		d :  in std_logic_vector(instruction_parallelism-1 downto 0);
+		q :  out std_logic_vector(instruction_parallelism-1 downto 0));
+	end component;
 	
+	
+component PC_instr_mem
+	port (
+        clk: in std_logic;
+	    rst: in std_logic;
+		PC_write: in std_logic;--enable register
+		address: in std_logic_vector(instruction_parallelism -1 downto 0);
+		PC_out:  out std_logic_vector(instruction_parallelism-1 downto 0));
+	);
+   
 	
 begin
 
 encoded_address <= ADDR;
-decoded_address <= std_logic_vector(unsigned(encoded_address) - "010000000000000000000000");
+decoded_address <= std_logic_vector((unsigned(encoded_address) - "010000000000000000000000")/4);
 
 
-process(CLK) begin
+process(CLK) begin --in pipe stage
+
 
 if(CLK'EVENT AND CLK='1') then 
  if(RAM_WR='1') then RAM(to_integer(unsigned(decoded_address))) <= DATA_IN; --synchronous write
- else DATA_OUT <= RAM(to_integer(unsigned(decoded_address)));
+ else DATA_OUT_s <= RAM(to_integer(unsigned(decoded_address)));
  end if;
 end if;
 end process;
+
+reg_instr_IF_ID : reg_instruction_IF_ID
+port map(
+
+	clk=> CLK,
+	rst => rst,
+	IF_ID_write=>IF_ID_write,
+	d=>data_out_s,
+	q=>data_out
+);
 
 
 end Behavioral;

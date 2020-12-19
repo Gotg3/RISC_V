@@ -148,6 +148,10 @@
 					"strict" : false
 				},
 				{
+					"name" : "PC_write",
+					"strict" : false
+				},
+				{
 					"name" : "DATA_IN[0]",
 					"strict" : false
 				},
