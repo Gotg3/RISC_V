@@ -1,0 +1,204 @@
+m255
+K4
+z2
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 dC:/Users/gianl/Desktop/mem/sim
+Edata_memory
+Z1 w1608365561
+Z2 DPx4 work 12 risc_package 0 22 JhGackP>W[6D`FMn0H;jm2
+Z3 DPx4 ieee 11 numeric_std 0 22 :ASDNFgHXf_ih3J@9F3Ze1
+Z4 DPx3 std 6 textio 0 22 zE1`LPoLg^DX3Oz^4Fj1K3
+Z5 DPx4 ieee 14 std_logic_1164 0 22 eNV`TJ_GofJTzYa?f<@Oe1
+Z6 dC:/Users/gianl/Desktop/lab3/components/mem/sim
+Z7 8../src/data_memory.vhd
+Z8 F../src/data_memory.vhd
+l0
+L7
+VMg_`;V2n]HBVEZR;0VN<73
+!s100 PhOi=]I=@RnRNC7zBni<Z3
+Z9 OV;C;10.5b;63
+31
+Z10 !s110 1608365564
+!i10b 1
+Z11 !s108 1608365564.000000
+Z12 !s90 -reportprogress|300|-93|-work|./work|../src/data_memory.vhd|
+Z13 !s107 ../src/data_memory.vhd|
+!i113 1
+Z14 o-93 -work ./work
+Z15 tExplicit 1 CvgOpt 0
+Abehavioral
+R2
+R3
+R4
+R5
+DEx4 work 11 data_memory 0 22 Mg_`;V2n]HBVEZR;0VN<73
+l55
+L18
+VH0X1>FOBhGL_4gV4jDknY1
+!s100 O[^Rk7al]EWg5[fU8o=XZ1
+R9
+31
+R10
+!i10b 1
+R11
+R12
+R13
+!i113 1
+R14
+R15
+Einstruction_memory
+Z16 w1608326147
+R2
+R3
+R4
+R5
+R0
+Z17 8../src/instruction_memory.vhd
+Z18 F../src/instruction_memory.vhd
+l0
+L7
+V;BURke=:]zLo=HXgITnGQ0
+!s100 S_dlmS:0b]ZCRli@dH6Q90
+R9
+31
+Z19 !s110 1608326282
+!i10b 1
+Z20 !s108 1608326282.000000
+Z21 !s90 -reportprogress|300|-93|-work|./work|../src/instruction_memory.vhd|
+Z22 !s107 ../src/instruction_memory.vhd|
+!i113 1
+R14
+R15
+Abehavioral
+R2
+R3
+R4
+R5
+DEx4 work 18 instruction_memory 0 22 ;BURke=:]zLo=HXgITnGQ0
+l49
+L17
+VM_@kW9XeMSY3>YkTk?`lR3
+!s100 oz?XWVlV7I@>3Pdz610YG3
+R9
+31
+R19
+!i10b 1
+R20
+R21
+R22
+!i113 1
+R14
+R15
+Prisc_package
+R3
+R4
+R5
+w1608223511
+R6
+8../src/risc_package.vhd
+F../src/risc_package.vhd
+l0
+L5
+VJhGackP>W[6D`FMn0H;jm2
+!s100 ezIRKVJlK8TkT7cmdYWW>0
+R9
+31
+R10
+!i10b 1
+R11
+!s90 -reportprogress|300|-93|-work|./work|../src/risc_package.vhd|
+!s107 ../src/risc_package.vhd|
+!i113 1
+R14
+R15
+Etb_data_memory
+Z23 w1608364763
+R2
+R3
+R4
+R5
+R6
+Z24 8../tb/tb_data_memory.vhd
+Z25 F../tb/tb_data_memory.vhd
+l0
+L8
+Vg8=hIf?PC=26NaKK`f@[h0
+!s100 UF3T^dNaFUC7Q3CT0870?3
+R9
+31
+R10
+!i10b 1
+R11
+Z26 !s90 -reportprogress|300|-93|-work|./work|../tb/tb_data_memory.vhd|
+Z27 !s107 ../tb/tb_data_memory.vhd|
+!i113 1
+R14
+R15
+Adut
+R2
+R3
+R4
+R5
+Z28 DEx4 work 14 tb_data_memory 0 22 g8=hIf?PC=26NaKK`f@[h0
+l35
+L11
+Z29 VXLnXIfERKY^?[YAI>OKoU0
+Z30 !s100 >KJ7hFJ>9WQVa=Rd>>VZ01
+R9
+31
+R10
+!i10b 1
+R11
+R26
+R27
+!i113 1
+R14
+R15
+Etb_instruction_memory
+Z31 w1608326278
+R2
+R3
+R4
+R5
+R0
+Z32 8../tb/tb_instruction_memory.vhd
+Z33 F../tb/tb_instruction_memory.vhd
+l0
+L8
+VkUXP5O8?7mYnAj_BSFNiL0
+!s100 ]VOEA``BSU_>n`Y^Qk3lf3
+R9
+31
+Z34 !s110 1608326894
+!i10b 1
+Z35 !s108 1608326894.000000
+Z36 !s90 -reportprogress|300|-93|-work|./work|../tb/tb_instruction_memory.vhd|
+Z37 !s107 ../tb/tb_instruction_memory.vhd|
+!i113 1
+R14
+R15
+Adut
+R2
+R3
+R4
+R5
+DEx4 work 21 tb_instruction_memory 0 22 kUXP5O8?7mYnAj_BSFNiL0
+l33
+L11
+VTFIf6z9Y;a]WC9VjJVJ1:3
+!s100 EW`dWVX2Ab:>9JEzCJ:nN3
+R9
+31
+R34
+!i10b 1
+R35
+R36
+R37
+!i113 1
+R14
+R15

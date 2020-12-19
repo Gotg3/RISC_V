@@ -1,0 +1,146 @@
+# Reading C:/intelFPGA_lite/19.1/modelsim_ase/tcl/vsim/pref.tcl
+do C:/Users/gianl/Desktop/lab3/components/mem/sim/script_sim_DM.do
+# Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
+# Start time: 09:07:15 on Dec 19,2020
+# vcom -reportprogress 300 -93 -work ./work ../src/risc_package.vhd 
+# -- Loading package STANDARD
+# -- Loading package TEXTIO
+# -- Loading package std_logic_1164
+# -- Loading package NUMERIC_STD
+# -- Compiling package risc_package
+# End time: 09:07:15 on Dec 19,2020, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
+# Start time: 09:07:15 on Dec 19,2020
+# vcom -reportprogress 300 -93 -work ./work ../src/data_memory.vhd 
+# -- Loading package STANDARD
+# -- Loading package TEXTIO
+# -- Loading package std_logic_1164
+# -- Loading package NUMERIC_STD
+# -- Loading package risc_package
+# -- Compiling entity data_memory
+# -- Compiling architecture Behavioral of data_memory
+# End time: 09:07:15 on Dec 19,2020, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
+# Start time: 09:07:15 on Dec 19,2020
+# vcom -reportprogress 300 -93 -work ./work ../tb/tb_data_memory.vhd 
+# -- Loading package STANDARD
+# -- Loading package TEXTIO
+# -- Loading package std_logic_1164
+# -- Loading package NUMERIC_STD
+# -- Loading package risc_package
+# -- Compiling entity tb_data_memory
+# -- Compiling architecture dut of tb_data_memory
+# End time: 09:07:15 on Dec 19,2020, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# vsim work.tb_data_memory 
+# Start time: 09:07:16 on Dec 19,2020
+# Loading std.standard
+# Loading std.textio(body)
+# Loading ieee.std_logic_1164(body)
+# Loading ieee.numeric_std(body)
+# Loading work.risc_package
+# Loading work.tb_data_memory(dut)
+# Loading work.data_memory(behavioral)
+do C:/Users/gianl/Desktop/lab3/components/mem/sim/script_sim_DM.do
+# Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
+# Start time: 09:08:28 on Dec 19,2020
+# vcom -reportprogress 300 -93 -work ./work ../src/risc_package.vhd 
+# -- Loading package STANDARD
+# -- Loading package TEXTIO
+# -- Loading package std_logic_1164
+# -- Loading package NUMERIC_STD
+# -- Compiling package risc_package
+# End time: 09:08:29 on Dec 19,2020, Elapsed time: 0:00:01
+# Errors: 0, Warnings: 0
+# Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
+# Start time: 09:08:29 on Dec 19,2020
+# vcom -reportprogress 300 -93 -work ./work ../src/data_memory.vhd 
+# -- Loading package STANDARD
+# -- Loading package TEXTIO
+# -- Loading package std_logic_1164
+# -- Loading package NUMERIC_STD
+# -- Loading package risc_package
+# -- Compiling entity data_memory
+# -- Compiling architecture Behavioral of data_memory
+# End time: 09:08:29 on Dec 19,2020, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
+# Start time: 09:08:29 on Dec 19,2020
+# vcom -reportprogress 300 -93 -work ./work ../tb/tb_data_memory.vhd 
+# -- Loading package STANDARD
+# -- Loading package TEXTIO
+# -- Loading package std_logic_1164
+# -- Loading package NUMERIC_STD
+# -- Loading package risc_package
+# -- Compiling entity tb_data_memory
+# -- Compiling architecture dut of tb_data_memory
+# End time: 09:08:29 on Dec 19,2020, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# End time: 09:08:29 on Dec 19,2020, Elapsed time: 0:01:13
+# Errors: 0, Warnings: 0
+# vsim work.tb_data_memory 
+# Start time: 09:08:29 on Dec 19,2020
+# Loading std.standard
+# Loading std.textio(body)
+# Loading ieee.std_logic_1164(body)
+# Loading ieee.numeric_std(body)
+# Loading work.risc_package
+# Loading work.tb_data_memory(dut)
+# Loading work.data_memory(behavioral)
+# ** Fatal: (vsim-3734) Index value 24 is out of range 0 to 21.
+#    Time: 260 ns  Iteration: 0  Process: /tb_data_memory/DM/line__63 File: ../src/data_memory.vhd
+# Fatal error in Process line__63 at ../src/data_memory.vhd line 68
+# 
+# HDL call sequence:
+# Stopped at ../src/data_memory.vhd 68 Process line__63
+# 
+do C:/Users/gianl/Desktop/lab3/components/mem/sim/script_sim_DM.do
+# Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
+# Start time: 09:12:44 on Dec 19,2020
+# vcom -reportprogress 300 -93 -work ./work ../src/risc_package.vhd 
+# -- Loading package STANDARD
+# -- Loading package TEXTIO
+# -- Loading package std_logic_1164
+# -- Loading package NUMERIC_STD
+# -- Compiling package risc_package
+# End time: 09:12:44 on Dec 19,2020, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
+# Start time: 09:12:44 on Dec 19,2020
+# vcom -reportprogress 300 -93 -work ./work ../src/data_memory.vhd 
+# -- Loading package STANDARD
+# -- Loading package TEXTIO
+# -- Loading package std_logic_1164
+# -- Loading package NUMERIC_STD
+# -- Loading package risc_package
+# -- Compiling entity data_memory
+# -- Compiling architecture Behavioral of data_memory
+# End time: 09:12:44 on Dec 19,2020, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
+# Start time: 09:12:44 on Dec 19,2020
+# vcom -reportprogress 300 -93 -work ./work ../tb/tb_data_memory.vhd 
+# -- Loading package STANDARD
+# -- Loading package TEXTIO
+# -- Loading package std_logic_1164
+# -- Loading package NUMERIC_STD
+# -- Loading package risc_package
+# -- Compiling entity tb_data_memory
+# -- Compiling architecture dut of tb_data_memory
+# End time: 09:12:44 on Dec 19,2020, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# End time: 09:12:45 on Dec 19,2020, Elapsed time: 0:04:16
+# Errors: 2, Warnings: 0
+# vsim work.tb_data_memory 
+# Start time: 09:12:45 on Dec 19,2020
+# Loading std.standard
+# Loading std.textio(body)
+# Loading ieee.std_logic_1164(body)
+# Loading ieee.numeric_std(body)
+# Loading work.risc_package
+# Loading work.tb_data_memory(dut)
+# Loading work.data_memory(behavioral)
+# End time: 09:21:41 on Dec 19,2020, Elapsed time: 0:08:56
+# Errors: 0, Warnings: 0
