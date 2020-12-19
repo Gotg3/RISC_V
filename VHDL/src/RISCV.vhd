@@ -19,9 +19,9 @@ port(
 	ALU_bypass_EX_out   :out std_logic_vector(data_parallelism-1 downto 0);--from EX stage
 	MemRead	            :out std_logic;
 	MemWrite            :out std_logic;
-	mux_IF_out          :out std_logic_vector(address_parallelism-1 downto 0);
-);
-
+	mux_IF_out          :out std_logic_vector(address_parallelism-1 downto 0)
+	);
+end RISCV;
 
 architecture structural of RISCV is
 
@@ -34,7 +34,7 @@ architecture structural of RISCV is
 		branch_instruction_address	: 							in std_logic_vector(address_parallelism-1 downto 0); --from branch pred
 		out_mux_IF_out				:							out std_logic_vector(address_parallelism-1 downto 0); --to IM
 		next_seq_address			:							out std_logic_vector(address_parallelism-1 downto 0); --to WB
-		current_address				:    				        out std_logic_vector(address_parallelism-1 downto 0));--to IF/ID pipe reg
+		current_address				:    				        out std_logic_vector(address_parallelism-1 downto 0)--to IF/ID pipe reg
 	);
 	end component;
 	
@@ -176,17 +176,27 @@ architecture structural of RISCV is
 		clk: in std_logic;
 		rst: in std_logic;
 		d :  in std_logic_vector(n-1 downto 0);
-		q :  out std_logic_vector(n-1 downto 0));
+		q :  out std_logic_vector(n-1 downto 0)
 	);
 	end component;
+	
+	component reg_zero
+	port(
+		clk: in std_logic;
+		rst: in std_logic;
+		d :  in std_logic;
+		q :  out std_logic	
+	);
+	end component;
+	
 	
 	signal JAL_IF_out_s, PC_IF_out_s : std_logic_vector(instruction_parallelism - 1 downto 0); -- IF stage output signals --IF/ID pipeline regs input
 	signal JAL_ID_in_s, PC_ID_in_s : std_logic_vector(instruction_parallelism - 1 downto 0); -- ID stage input signals --IF/ID pipeline regs output
 	signal IF_ID_Write_ID_out_s: std_logic; --output signal from ID stage to IF/ID pipeline regs to hazard detection
 	signal ID_EX_MemRead_ID_in_s: std_logic; --from ex stage to ID stage
 	signal rd_backward_ID_in_s: std_logic_vector(source_reg - 1 downto 0); --from EX stage to ID stage
-	signal JAL_ID_out_s, PC_ID_out_s, PC_EX_in_s, JAL_EX_in_s, TAddr_EX_out_s, JAL_PC_4_EX_out_s, JAL_PC_4_MEM_in_s, TAddr_MEM_in_s, JAL_PC_4_MEM_out_s, TAddr_MEM_out_s: std_logic_vector(instruction_parallelism - 1 downto 0);
-	signal read_data_1_ID_out_s, read_data_2_ID_out_s, immediate_ID_out_s, imm_EX_in_s, immediate_EX_out_s, Read_data1_EX_in_s, Read_data2_EX_in_s, ALUout_EX_out_s, immediate_MEM_in_s, ALUout_MEM_in_s, immediate_MEM_out_s: std_logic_vector(data_parallelism-1 downto 0);
+	signal JAL_ID_out_s, PC_ID_out_s, PC_EX_in_s, JAL_EX_in_s, TAddr_EX_out_s, JAL_PC_4_EX_out_s, JAL_PC_4_MEM_in_s, TAddr_MEM_in_s, JAL_PC_4_MEM_out_s, TAddr_MEM_out_s, JAL_PC_4_WB_in_s: std_logic_vector(instruction_parallelism - 1 downto 0);
+	signal read_data_1_ID_out_s, read_data_2_ID_out_s, immediate_ID_out_s, imm_EX_in_s, immediate_EX_out_s, Read_data1_EX_in_s, Read_data2_EX_in_s, ALUout_EX_out_s, immediate_MEM_in_s, ALUout_MEM_in_s, immediate_MEM_out_s, ALUout_WB_in_s, immediate_WB_in_s: std_logic_vector(data_parallelism-1 downto 0);
 	signal to_ALU_control_ID_out_s, to_ALU_ctrl_EX_in_s: std_logic_vector(alu_ctrl - 1 downto 0);
 	signal rd_ID_out_s, rd_EX_in_s: std_logic_vector(rd_length - 1 downto 0); 
 	signal PCWrite_ID_out_s: std_logic; --from ID stage to PC and to instruction memory
@@ -199,9 +209,6 @@ architecture structural of RISCV is
 	signal rd_MEM_in_s, rd_WB_in_s, rd_MEM_out_s: std_logic_vector(dest_reg-1 downto 0);
 	signal PCsrc_s: std_logic; --from MEM stage to IF stage
 	
-
-		
-		
 		
 	begin
 	
@@ -213,8 +220,8 @@ architecture structural of RISCV is
 	                            PC_write					=>PCWrite_ID_out_s,
 	                            branch_instruction_address	=>TAddr_MEM_out_s,
 	                            out_mux_IF_out				=>mux_IF_out,
-	                            next_seq_address			=>JAL_ID_in_s,
-	                            current_address				=>PC_ID_in_s
+	                            next_seq_address			=>JAL_IF_out_s,
+	                            current_address				=>PC_IF_out_s
 								);
 	
 	--IF/ID pipeline registers
@@ -242,7 +249,7 @@ architecture structural of RISCV is
 	                    RegWrite_ID_in		 => WB_WB_in_s(0),
 	                    ID_EX_MemRead_ID_in  => ID_EX_MemRead_ID_in_s,
 	                    jal_ID_in			 => JAL_ID_in_s,
-	                    pc_ID_in			 => PC_ID_in_s
+	                    pc_ID_in			 => PC_ID_in_s,
 	                    write_register_ID_in => rd_WB_in_s,
 	                    write_data_ID_in	 => output_WB_out_s,
 	                    instruction_ID_in    => instruction_ID_in,
@@ -440,12 +447,12 @@ architecture structural of RISCV is
 	                                            q  	=> TAddr_MEM_in_s
 												);
 	
-	reg_z_EX_MEM: reg generic map(1) port map (
-												clk => clk,
-	                                            rst => rst,
-	                                            d   => z_EX_out_s,
-	                                            q  	=> z_MEM_in_s
-												);
+	reg_z_EX_MEM: reg_zero port map (
+									clk => clk,
+									rst => rst,
+									d   => z_EX_out_s,
+									q  	=> z_MEM_in_s
+									);
 												
 	reg_ALUout_EX_MEM: reg generic map(32) port map (
 												clk => clk,
@@ -489,7 +496,7 @@ architecture structural of RISCV is
 												clk => clk,
 	                                            rst => rst,
 	                                            d   => WB_MEM_out_s,
-	                                            q  	=> WB_WB_in_s,
+	                                            q  	=> WB_WB_in_s
 												);
 	
 	reg_JAL_MEM_WB: reg generic map(32) port map (
@@ -526,8 +533,8 @@ architecture structural of RISCV is
 	                    immediate_WB_in => immediate_WB_in_s,
 	                    JAL_PC_4_WB_in  => JAL_PC_4_WB_in_s,
 	                    Read_data_WB_in => Read_data_WB_in,
-	                    sel_WB_in       => WB_WB_in_s(3 downto 0),
-	                    output_WB_out   => output_WB_out_s;	
+	                    sel_WB_in       => WB_WB_in_s(3 downto 1),
+	                    output_WB_out   => output_WB_out_s	
 						);	
 
     PCWrite_ID_out <= PCWrite_ID_out_s;	
@@ -535,3 +542,5 @@ architecture structural of RISCV is
 	ALUout_EX_out <= ALUout_EX_out_s;
     MemWrite <= M_MEM_in_s(2);
 	MemRead <= M_MEM_in_s(1);
+	
+end structural;
