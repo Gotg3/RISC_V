@@ -17,14 +17,58 @@ port(
 	IF_ID_Write_ID_out  :out std_logic; --from ID stage
 	ALUout_EX_out       :out std_logic_vector(data_parallelism-1 downto 0);--from EX stage
 	ALU_bypass_EX_out   :out std_logic_vector(data_parallelism-1 downto 0);--from EX stage
-	
 	MemRead	            :out std_logic;
 	MemWrite            :out std_logic;
+	mux_IF_out          :out std_logic_vector(address_parallelism-1 downto 0);
 );
 
 
 architecture structural of RISCV is
 
+	component IF_stage
+	port(
+		clk							: 			                in std_logic;
+		rst							: 			                in std_logic;
+		PC_src						:			                in std_logic;
+		PC_write					:   		                in std_logic;  --enable register
+		branch_instruction_address	: 							in std_logic_vector(address_parallelism-1 downto 0); --from branch pred
+		out_mux_IF_out				:							out std_logic_vector(address_parallelism-1 downto 0); --to IM
+		next_seq_address			:							out std_logic_vector(address_parallelism-1 downto 0); --to WB
+		current_address				:    				        out std_logic_vector(address_parallelism-1 downto 0));--to IF/ID pipe reg
+	);
+	end component;
+	
+	component ID_stage
+	port(
+		--inputs
+	    clk					 : in  std_logic;
+		rst					 : in  std_logic;--reset attivo alto
+		RegWrite_ID_in		 : in  std_logic;
+		ID_EX_MemRead_ID_in  : in std_logic;-- attivo alto
+		jal_ID_in			 : in  std_logic_vector(instruction_parallelism - 1 downto 0);
+		pc_ID_in			 : in  std_logic_vector(instruction_parallelism - 1 downto 0);
+		write_register_ID_in : in  std_logic_vector(length_in_RF-1 downto 0);
+		write_data_ID_in	 : in  std_logic_vector(data_parallelism - 1 downto 0);
+		instruction_ID_in    : in  std_logic_vector(instruction_parallelism - 1 downto 0);
+     	rd_backward_ID_in    : in std_logic_vector(source_reg - 1 downto 0);
+		--outputs
+		jal_ID_out			 : out std_logic_vector(instruction_parallelism - 1 downto 0);
+		pc_ID_out		     : out std_logic_vector(instruction_parallelism - 1 downto 0);
+		read_data_1_ID_out	 : out std_logic_vector(data_parallelism-1 downto 0);
+		read_data_2_ID_out   : out std_logic_vector(data_parallelism-1 downto 0);
+		immediate_ID_out     : out std_logic_vector(data_parallelism - 1 downto 0);
+		to_ALU_control_ID_out: out std_logic_vector(alu_ctrl - 1 downto 0);
+		rd_ID_out			 : out std_logic_vector(rd_length - 1 downto 0);
+		PCWrite_ID_out       : out std_logic;
+		IF_ID_Write_ID_out   : out std_logic;
+		WB_ID_out            : out std_logic_vector(WB_length -1 downto 0);
+		M_ID_out             : out std_logic_vector(M_length -1 downto 0);
+		EX_ID_out            : out std_logic_vector(EX_length -1 downto 0);
+		rs1_ID_out           : out std_logic_vector(source_reg - 1 downto 0);
+		rs2_ID_out           : out std_logic_vector(source_reg - 1 downto 0)
+	);    
+	end component;
+	
 	component EX_stage
 	port(
 		--in
@@ -80,37 +124,6 @@ architecture structural of RISCV is
 
 		
 	);
-	end component;
-	
-	component ID_stage
-	port(
-		--inputs
-	    clk					 : in  std_logic;
-		rst					 : in  std_logic;--reset attivo alto
-		RegWrite_ID_in		 : in  std_logic;
-		ID_EX_MemRead_ID_in  : in std_logic;-- attivo alto
-		jal_ID_in			 : in  std_logic_vector(instruction_parallelism - 1 downto 0);
-		pc_ID_in			 : in  std_logic_vector(instruction_parallelism - 1 downto 0);
-		write_register_ID_in : in  std_logic_vector(length_in_RF-1 downto 0);
-		write_data_ID_in	 : in  std_logic_vector(data_parallelism - 1 downto 0);
-		instruction_ID_in    : in  std_logic_vector(instruction_parallelism - 1 downto 0);
-     	rd_backward_ID_in    : in std_logic_vector(source_reg - 1 downto 0);
-		--outputs
-		jal_ID_out			 : out std_logic_vector(instruction_parallelism - 1 downto 0);
-		pc_ID_out		     : out std_logic_vector(instruction_parallelism - 1 downto 0);
-		read_data_1_ID_out	 : out std_logic_vector(data_parallelism-1 downto 0);
-		read_data_2_ID_out   : out std_logic_vector(data_parallelism-1 downto 0);
-		immediate_ID_out     : out std_logic_vector(data_parallelism - 1 downto 0);
-		to_ALU_control_ID_out: out std_logic_vector(alu_ctrl - 1 downto 0);
-		rd_ID_out			 : out std_logic_vector(rd_length - 1 downto 0);
-		PCWrite_ID_out       : out std_logic;
-		IF_ID_Write_ID_out   : out std_logic;
-		WB_ID_out            : out std_logic_vector(WB_length -1 downto 0);
-		M_ID_out             : out std_logic_vector(M_length -1 downto 0);
-		EX_ID_out            : out std_logic_vector(EX_length -1 downto 0);
-		rs1_ID_out           : out std_logic_vector(source_reg - 1 downto 0);
-		rs2_ID_out           : out std_logic_vector(source_reg - 1 downto 0)
-	);    
 	end component;
 	
 	component MEM_stage
@@ -193,6 +206,16 @@ architecture structural of RISCV is
 	begin
 	
 	--IF stage
+	IF_block: IF_stage port map(
+								clk							=>clk,
+	                            rst							=>rst,
+	                            PC_src						=>PCsrc_s,
+	                            PC_write					=>PCWrite_ID_out_s,
+	                            branch_instruction_address	=>TAddr_MEM_out_s,
+	                            out_mux_IF_out				=>mux_IF_out,
+	                            next_seq_address			=>JAL_ID_in_s,
+	                            current_address				=>PC_ID_in_s
+								);
 	
 	--IF/ID pipeline registers
 	reg_jal_IF_ID: reg_jal_PC_IF_ID port map (
@@ -505,33 +528,8 @@ architecture structural of RISCV is
 	                    Read_data_WB_in => Read_data_WB_in,
 	                    sel_WB_in       => WB_WB_in_s(3 downto 0),
 	                    output_WB_out   => output_WB_out_s;	
-						);
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+						);	
+
     PCWrite_ID_out <= PCWrite_ID_out_s;	
 	IF_ID_Write_ID_out <= IF_ID_Write_ID_out_s;	
 	ALUout_EX_out <= ALUout_EX_out_s;

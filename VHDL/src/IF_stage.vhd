@@ -5,12 +5,13 @@ use ieee.numeric_std.all;
 use work.risc_package.all;
 
 entity IF_stage is
-		port (clk: 			                in std_logic;
+		port (
+				clk: 			                in std_logic;
 				rst: 			                in std_logic;
 				PC_src:		                in std_logic;
 				PC_write:                   in std_logic;  --enable register
 				branch_instruction_address: in std_logic_vector(address_parallelism-1 downto 0); --from branch pred
-				out_mux_IF_out:				 out std_logic_vector(address_parallelism-1 downto 0): --to IM
+				out_mux_IF_out:				 out std_logic_vector(address_parallelism-1 downto 0); --to IM
 				next_seq_address:				 out std_logic_vector(address_parallelism-1 downto 0); --to WB
 				current_address:            out std_logic_vector(address_parallelism-1 downto 0));--to IF/ID pipe reg
 end IF_stage;
@@ -35,10 +36,12 @@ mux: mux21 generic map(address_parallelism) port map(next_tmp_address, branch_in
 
 process(clk, rst)
  begin
-	if (rst = '1') then current_tmp_address <= (others => '0');
+	if (rst = '1') then 
+	current_tmp_address <= (others => '0');
 	elsif(clk'event and clk = '1') then
 		
-		if( PC_write = '1') then current_tmp_address <= tmp_address;					
+		if( PC_write = '1') then 
+		current_tmp_address <= tmp_address;					
 			end if;	
 	end if;
 	end process;
