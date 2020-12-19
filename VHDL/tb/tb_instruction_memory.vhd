@@ -14,13 +14,14 @@ architecture dut of tb_instruction_memory is
 
 component instruction_memory
 
-port (
+	port (
 			ADDR: 	 in std_logic_vector(address_parallelism-1 downto 0);
 			DATA_IN:  in std_logic_vector(instruction_parallelism-1 downto 0);
 			RAM_WR:   in std_logic;
 			CLK: 		 in std_logic;
 			DATA_OUT: out std_logic_vector(instruction_parallelism-1 downto 0);
 			IF_ID_write:    in std_logic;
+			PC_write:       in std_logic;
 			rst		  : in std_logic
 			);
 end component;
@@ -32,8 +33,9 @@ signal DATA_IN		:std_logic_vector(data_parallelism-1 downto 0):=(others=>'0');
 signal RAM_WR		:std_logic; 				
 signal DATA_OUT		:std_logic_vector(data_parallelism-1 downto 0);
 signal ADDR0			:std_logic_vector(address_parallelism-1 downto 0):=(others=>'0');
-signal IF_ID_write   : std_logic;
+signal IF_ID_write   	: std_logic:='0';
 signal rst				:std_logic:='0';
+signal PC_write		:std_logic:='0';
 begin
 
 IM: instruction_memory
@@ -44,6 +46,7 @@ port map(
     RAM_WR   =>RAM_WR,
     DATA_OUT =>DATA_OUT,
 	 rst=>rst,
+	 PC_write=>PC_write,
 	 IF_ID_write=>IF_ID_write
 );
 
@@ -78,14 +81,11 @@ begin
 
 RAM_WR<='0'; -- read
 wait for 160 ns;
-RAM_WR<='1';
-DATA_IN<=(others=>'1');
+PC_write<='1'; -- hold prev value
+wait for 160 ns;
+IF_ID_write<='1';
 wait;
 end process;
-
-
-
-
 end architecture;
 
 

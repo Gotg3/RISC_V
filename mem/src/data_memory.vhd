@@ -9,6 +9,7 @@ entity data_memory is
 			ADDR: 	 		in std_logic_vector(address_parallelism-1 downto 0);
 			DATA_IN:  		in std_logic_vector(data_parallelism-1 downto 0);
 			RAM_WR:   		in std_logic;
+			RAM_RD:			in std_logic;
 			CLK: 			in std_logic;
 			DATA_OUT: 		out std_logic_vector(data_parallelism-1 downto 0);
 			rst:				in std_logic
@@ -64,7 +65,10 @@ process(CLK) begin --in pipe stage
 
 if(CLK'EVENT AND CLK='1') then 
  if(RAM_WR='1') then RAM(to_integer(unsigned(decoded_address))) <= DATA_IN; --synchronous write
- else DATA_OUT_s <= RAM(to_integer(unsigned(decoded_address)));
+ end if;
+ 
+ if(RAM_RD='1') then 
+  DATA_OUT_s <= RAM(to_integer(unsigned(decoded_address)));
  end if;
 end if;
 
