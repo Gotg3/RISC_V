@@ -10,7 +10,7 @@ port (
         clk: in std_logic;
 	    rst: in std_logic;
 		PC_write: in std_logic;--enable register
-		instruction: in std_logic_vector(instruction_parallelism -1 downto 0);
+		address: in std_logic_vector(instruction_parallelism -1 downto 0);
 		PC_out:  out std_logic_vector(instruction_parallelism-1 downto 0));
 end PC_instr_mem;
 
@@ -27,9 +27,9 @@ begin
 		
 		elsif(clk'event and clk = '1') then
 		
-			if( PC_write = '1') then
+			if( PC_write = '0') then
 			
-				PC_out <= instruction;					
+				PC_out <= address;					
 		 
 			end if;
 		end if;
