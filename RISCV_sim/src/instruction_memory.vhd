@@ -64,13 +64,18 @@ component reg_instruction_IF_ID
 	
 begin
 
+
 encoded_address <= ADDR;
-decoded_address <= std_logic_vector((unsigned(encoded_address) - "00000000010000000000000000000000")/4);
+decoded_address <= std_logic_vector((unsigned(encoded_address) - "010000000000000000000000")/4);
 
 
+process(CLK,rst) begin --in pipe stage
 
-process(CLK) begin --in pipe stage
+if (rst = '1') then --aggiunto reset per puntare a locazione 0
 
+DATA_OUT_s <= RAM(0);
+
+else
 
 if(CLK'EVENT AND CLK='1') then 
  if(RAM_WR='1') then RAM(to_integer(unsigned(decoded_address))) <= DATA_IN; --synchronous write
@@ -79,6 +84,7 @@ if(CLK'EVENT AND CLK='1') then
 	DATA_OUT_s <= RAM(to_integer(unsigned(decoded_address)));
 	end if;
  end if;
+end if;
 end if;
 end process;
 
