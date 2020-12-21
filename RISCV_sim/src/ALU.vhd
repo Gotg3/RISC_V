@@ -112,7 +112,7 @@ end entity;
 									--end if;
 									
 					when others => output_s<=(others=>'0');	
-										z_s<='0';
+										z_s<='1'; --for JAL
 					
 				end case;
 

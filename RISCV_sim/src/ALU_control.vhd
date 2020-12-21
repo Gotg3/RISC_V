@@ -39,7 +39,7 @@ architecture structural of ALU_control is
 					
 					when "001" =>
 						
-						if(imm30='1') then
+						if(imm30='1' and funct3="101" ) then
 							
 							 ctrlALU<="0010"; --SRAI
 						
