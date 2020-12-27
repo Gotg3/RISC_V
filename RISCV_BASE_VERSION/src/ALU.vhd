@@ -111,9 +111,10 @@ end entity;
 									--	
 									--end if;
 
-					when "1011" =>
+					when "1011" => --LUI
 
 						output_s<=in2_s; --forward imm
+						z_s<='0';
 									
 					when others => output_s<=(others=>'0');	
 										z_s<='1'; --for JAL
