@@ -32,12 +32,12 @@ begin
 
 next_tmp_address <=  std_logic_vector(unsigned(current_tmp_address) + 4); --PC+4 
 
-mux: mux21 generic map(address_parallelism) port map(next_tmp_address, branch_instruction_address, PC_src, tmp_address);
+mux: mux21 generic map(address_parallelism) port map(next_tmp_address, branch_instruction_address, PC_src, tmp_address); --address choice between jump and seq
 
 process(clk, rst)
  begin
 	if (rst = '1') then 
-	current_tmp_address <= "00000000010000000000000000000000";
+	current_tmp_address <= "00000000010000000000000000000000"; --starting address
 	elsif(clk'event and clk = '1') then
 		
 		if( (PC_write='0' AND PC_src='0' ) OR (PC_write='0' AND PC_src='1' ) OR (PC_write='1' AND PC_src='1' )   ) then  --changed to 0, prev: PC_write = '1', tiene in conto l'update dell'add per il salto 
